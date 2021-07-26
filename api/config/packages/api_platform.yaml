@@ -1,0 +1,31 @@
+api_platform:
+    allow_plain_identifiers: true
+    title: Wowvendor blog API Platform
+    version: 1.0.0
+#    enable_profiler: false
+    mapping:
+        paths: ['%kernel.project_dir%/src/Entity']
+    patch_formats:
+        json: ['application/merge-patch+json']
+    swagger:
+        versions: [3]
+    formats:
+        jsonld: ['application/ld+json']
+        json: ['application/json']
+        html: ['text/html']
+    # Mercure integration, remove if unwanted
+    mercure:
+        enabled: false
+    # Good cache defaults for REST APIs
+    defaults:
+        stateless: true
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']
+    collection:
+        pagination:
+            page_parameter_name: 'page'
+            items_per_page_parameter_name: 'pageSize'
+            enabled: true
+            partial: false
+    enable_entrypoint: true
+
