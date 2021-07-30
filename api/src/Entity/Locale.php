@@ -3,14 +3,14 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\TestRepository;
+use App\Repository\LocaleRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=TestRepository::class)
+ * @ORM\Entity(repositoryClass=LocaleRepository::class)
  */
 #[ApiResource]
-class Test
+class Locale
 {
     /**
      * @ORM\Id
@@ -23,11 +23,6 @@ class Test
      * @ORM\Column(type="string", length=255)
      */
     private $name;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $age;
 
     public function getId(): ?int
     {
@@ -42,18 +37,6 @@ class Test
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getAge(): ?int
-    {
-        return $this->age;
-    }
-
-    public function setAge(int $age): self
-    {
-        $this->age = $age;
 
         return $this;
     }
