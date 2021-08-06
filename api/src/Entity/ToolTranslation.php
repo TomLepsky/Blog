@@ -3,51 +3,49 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\TagTranslationRepository;
-use App\Translation\Translatable;
-use App\Translation\Translation;
+use App\Repository\ToolTranslationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=TagTranslationRepository::class)
+ * @ORM\Entity(repositoryClass=ToolTranslationRepository::class)
  */
 #[ApiResource(
     denormalizationContext: [
-        'groups' => ['tagTranslation:write']
+        'groups' => ['toolTranslation:write']
     ],
     normalizationContext: [
-        'groups' => ['tagTranslation:read']
+        'groups' => ['toolTranslation:read']
     ],
 )]
-class TagTranslation
+class ToolTranslation
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"tagTranslation:read"})
+     * @Groups({"toolTranslation:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"tagTranslation:read", "tagTranslation:write", "articleCollection:read", "tagCollection:read", "tagItem:read"})
+     * @Groups({"toolTranslation:read", "toolTranslation:write", "toolCollection:read", "toolItem:read"})
      */
     private $name;
 
     /**
      * @ORM\ManyToOne(targetEntity=Locale::class)
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"tagTranslation:read", "tagTranslation:write", "tagCollection:read", "tagItem:read"})
+     * @Groups({"toolTranslation:read", "toolTranslation:write", "toolCollection:read", "toolItem:read"})
      */
     private $locale;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Tag::class, inversedBy="tagTranslations")
-     * @Groups({"tagTranslation:read"})
+     * @ORM\ManyToOne(targetEntity=Tool::class, inversedBy="toolTranslations")
+     * @Groups({"toolTranslation:read", "toolTranslation:write"})
      */
-    private $tag;
+    private $tool;
 
     public function getId(): ?int
     {
@@ -78,19 +76,14 @@ class TagTranslation
         return $this;
     }
 
-    public function getLocaleName() : string
+    public function getTool(): ?Tool
     {
-        return $this->locale->getName();
+        return $this->tool;
     }
 
-    public function getTag(): ?Tag
+    public function setTool(?Tool $tool): self
     {
-        return $this->tag;
-    }
-
-    public function setTag(?Tag $tag): self
-    {
-        $this->tag = $tag;
+        $this->tool = $tool;
 
         return $this;
     }

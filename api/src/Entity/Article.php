@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\DTO\ArticleOutput;
+use App\DTO\ArticleTranslationInput;
 use App\Repository\ArticleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,14 +16,39 @@ use JetBrains\PhpStorm\Pure;
 
 /**
  * @ORM\Entity(repositoryClass=ArticleRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 #[ApiResource(
+    collectionOperations: [
+        'get',
+        'post',
+        'getCollection' => [
+            'method' => 'get',
+            'path' => '/articles/collection',
+            'normalization_context' => ['groups' => ['ArticleCollection:read']],
+            'controller' => 'App\Controller\ArticleController::getTranslatableCollection',
+            'output' => ArticleOutput::class
+        ]
+    ],
+    itemOperations: [
+        'get',
+        'put',
+        'delete',
+        'getItem' => [
+            'method' => 'get',
+            'path' => '/articles/item/{id}',
+            'requirements' => ['id' => '\d+'],
+            'normalization_context' => ['groups' => ['articleItem:read']],
+            'controller' => 'App\Controller\ArticleController::getTranslatableItem',
+            'output' => ArticleOutput::class
+        ]
+    ],
     denormalizationContext: [
         'groups' => ['article:write']
     ],
     normalizationContext: [
         'groups' => ['article:read']
-    ]
+    ],
 )]
 class Article
 {
@@ -30,26 +57,26 @@ class Article
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"article:read", "article:write"})
+     * @Groups({"article:read", "articleCollection:read", "articleItem:read"})
      */
     private $id;
 
     /**
      * @ORM\OneToMany(targetEntity=ArticleTranslation::class, mappedBy="article", orphanRemoval=true)
-     * @Groups({"article:read", "article:write"})
+     * @Groups({"article:read", "article:write", "articleCollection:read", "articleItem:read"})
      */
-    private $articleTranslation;
+    private $articleTranslations;
 
     /**
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="articles")
-     * @Groups({"article:read", "article:write"})
+     * @Groups({"article:read", "article:write", "articleCollection:read", "articleItem:read"})
      */
     private $tags;
 
     /**
      * @ORM\ManyToMany(targetEntity=self::class, inversedBy="children")
-     * @MaxDepth(4)
-     * @Groups({"article:read", "article:write"})
+     * @MaxDepth(1)
+     * @Groups({"article:read", "article:write", "articleCollection:read", "articleItem:read"})
      */
     #[ApiProperty(
         readableLink: true,
@@ -59,23 +86,38 @@ class Article
 
     /**
      * @ORM\ManyToMany(targetEntity=self::class, mappedBy="parents")
-     * @Groups({"article:read", "article:write"})
+     * @MaxDepth(1)
+     * @Groups({"article:read", "article:write", "articleCollection:read", "articleItem:read"})
      */
     private $children;
 
     /**
      * @ORM\ManyToOne(targetEntity=Game::class, inversedBy="popularArticles")
-     * @Groups({"article:read", "article:write"})
+     * @Groups({"article:read"})
      */
     private $game;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"article:read", "articleCollection:read", "articleItem:read"})
+     */
+    private $createdAt;
 
     #[Pure]
     public function __construct()
     {
-        $this->articleTranslation = new ArrayCollection();
+        $this->articleTranslations = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->parents = new ArrayCollection();
         $this->children = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setDefaultCreatedAt() : void
+    {
+        $this->createdAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -83,15 +125,15 @@ class Article
         return $this->id;
     }
 
-    public function getArticleTranslation(): Collection
+    public function getArticleTranslations(): Collection
     {
-        return $this->articleTranslation;
+        return $this->articleTranslations;
     }
 
     public function addArticleTranslation(ArticleTranslation $articleTranslation): self
     {
-        if (!$this->articleTranslation->contains($articleTranslation)) {
-            $this->articleTranslation[] = $articleTranslation;
+        if (!$this->articleTranslations->contains($articleTranslation)) {
+            $this->articleTranslations[] = $articleTranslation;
             $articleTranslation->setArticle($this);
         }
 
@@ -100,7 +142,7 @@ class Article
 
     public function removeArticleTranslation(ArticleTranslation $articleTranslation): self
     {
-        if ($this->articleTranslation->removeElement($articleTranslation)) {
+        if ($this->articleTranslations->removeElement($articleTranslation)) {
             // set the owning side to null (unless already changed)
             if ($articleTranslation->getArticle() === $this) {
                 $articleTranslation->setArticle(null);
@@ -140,7 +182,7 @@ class Article
     {
         if (!$this->children->contains($child)) {
             $this->children[] = $child;
-//            $child->setParent($this);
+            $child->addParent($this);
         }
         return $this;
     }
@@ -148,10 +190,9 @@ class Article
     public function removeChild(self $child): self
     {
         if ($this->children->removeElement($child)) {
-            // set the owning side to null (unless already changed)
-//            if ($child->getParent() === $this) {
-//                $child->setParent(null);
-//            }
+            if ($child->getParents()->contains($this)) {
+                $child->removeParent($this);
+            }
         }
         return $this;
     }
@@ -161,22 +202,21 @@ class Article
         return $this->parents;
     }
 
-    public function addParents(self $parent): self
+    public function addParent(self $parent): self
     {
         if (!$this->parents->contains($parent)) {
             $this->parents[] = $parent;
-//            $child->setParent($this);
+            $parent->addChild($this);
         }
         return $this;
     }
 
     public function removeParent(self $parent): self
     {
-        if ($this->children->removeElement($parent)) {
-            // set the owning side to null (unless already changed)
-//            if ($child->getParent() === $this) {
-//                $child->setParent(null);
-//            }
+        if ($this->parents->removeElement($parent)) {
+            if ($parent->getChildren()->contains($this)) {
+                $parent->removeChild($this);
+            }
         }
         return $this;
     }
@@ -189,6 +229,18 @@ class Article
     public function setGame(?Game $game): self
     {
         $this->game = $game;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

@@ -19,6 +19,21 @@ class LocaleRepository extends ServiceEntityRepository
         parent::__construct($registry, Locale::class);
     }
 
+    public function getIdByName(string $name)
+    {
+        return $this->createQueryBuilder('l')
+            ->select('l.id')
+            ->where('l.name = :name')
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function isExist(string $name) : bool
+    {
+        return empty($this->getIdByName($name)) ? false : true;
+    }
+
     // /**
     //  * @return Locale[] Returns an array of Locale objects
     //  */
