@@ -8,11 +8,21 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=GameRepository::class)
  */
 #[ApiResource(
+    collectionOperations: [
+        'get',
+        'post'
+    ],
+    itemOperations: [
+        'get',
+        'put',
+        'delete'
+    ],
     denormalizationContext: [
         'groups' => ['game:write']
     ],
@@ -28,35 +38,35 @@ class Game
      * @ORM\Column(type="integer")
      * @Groups({"game:read"})
      */
-    private $id;
+    private int $id;
 
     /**
-     * @ORM\OneToMany(targetEntity=GameTranslation::class, mappedBy="game", orphanRemoval=true)
+     * @ORM\Column(type="string", length=255)
      * @Groups({"game:read", "game:write"})
+     * @Assert\NotBlank()
      */
-    private $gameTranslations;
+    private string $name;
 
     /**
      * @ORM\OneToMany(targetEntity=Article::class, mappedBy="game")
      * @Groups({"game:read", "game:write"})
      */
-    private $popularArticles;
+    private ?Collection $popularArticles;
 
     /**
      * @ORM\OneToMany(targetEntity=Tag::class, mappedBy="game")
      * @Groups({"game:read", "game:write"})
      */
-    private $tags;
+    private ?Collection $tags;
 
     /**
      * @ORM\OneToMany(targetEntity=Tool::class, mappedBy="game")
      * @Groups({"game:read", "game:write"})
      */
-    private $tools;
+    private ?Collection $tools;
 
     public function __construct()
     {
-        $this->gameTranslations = new ArrayCollection();
         $this->popularArticles = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->tools = new ArrayCollection();
@@ -67,34 +77,19 @@ class Game
         return $this->id;
     }
 
-    public function getGameTranslations(): Collection
+    public function getName(): ?string
     {
-        return $this->gameTranslations;
+        return $this->name;
     }
 
-    public function addGameTranslation(GameTranslation $gameTranslation): self
+    public function setName(string $name): self
     {
-        if (!$this->gameTranslations->contains($gameTranslation)) {
-            $this->gameTranslations[] = $gameTranslation;
-            $gameTranslation->setGame($this);
-        }
+        $this->name = $name;
 
         return $this;
     }
 
-    public function removeGameTranslation(GameTranslation $gameTranslation): self
-    {
-        if ($this->gameTranslations->removeElement($gameTranslation)) {
-            // set the owning side to null (unless already changed)
-            if ($gameTranslation->getGame() === $this) {
-                $gameTranslation->setGame(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getPopularArticles(): Collection
+    public function getPopularArticles(): ?Collection
     {
         return $this->popularArticles;
     }
@@ -118,10 +113,7 @@ class Game
         return $this;
     }
 
-    /**
-     * @return Collection|Tag[]
-     */
-    public function getTags(): Collection
+    public function getTags(): ?Collection
     {
         return $this->tags;
     }
@@ -148,10 +140,7 @@ class Game
         return $this;
     }
 
-    /**
-     * @return Collection|Tool[]
-     */
-    public function getTools(): Collection
+    public function getTools(): ?Collection
     {
         return $this->tools;
     }

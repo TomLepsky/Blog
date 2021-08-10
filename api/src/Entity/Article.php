@@ -4,14 +4,15 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\DTO\ArticleOutput;
-use App\DTO\ArticleTranslationInput;
 use App\Repository\ArticleRepository;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
+use Symfony\Component\Validator\Constraints as Assert;
 use JetBrains\PhpStorm\Pure;
 
 /**
@@ -21,27 +22,12 @@ use JetBrains\PhpStorm\Pure;
 #[ApiResource(
     collectionOperations: [
         'get',
-        'post',
-        'getCollection' => [
-            'method' => 'get',
-            'path' => '/articles/collection',
-            'normalization_context' => ['groups' => ['ArticleCollection:read']],
-            'controller' => 'App\Controller\ArticleController::getTranslatableCollection',
-            'output' => ArticleOutput::class
-        ]
+        'post'
     ],
     itemOperations: [
         'get',
         'put',
-        'delete',
-        'getItem' => [
-            'method' => 'get',
-            'path' => '/articles/item/{id}',
-            'requirements' => ['id' => '\d+'],
-            'normalization_context' => ['groups' => ['articleItem:read']],
-            'controller' => 'App\Controller\ArticleController::getTranslatableItem',
-            'output' => ArticleOutput::class
-        ]
+        'delete'
     ],
     denormalizationContext: [
         'groups' => ['article:write']
@@ -52,61 +38,78 @@ use JetBrains\PhpStorm\Pure;
 )]
 class Article
 {
-
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"article:read", "articleCollection:read", "articleItem:read"})
+     * @Groups({"article:read", "game:read"})
      */
-    private $id;
+    private int $id;
 
     /**
-     * @ORM\OneToMany(targetEntity=ArticleTranslation::class, mappedBy="article", orphanRemoval=true)
-     * @Groups({"article:read", "article:write", "articleCollection:read", "articleItem:read"})
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"article:read", "article:write", "game:read"})
+     * @Assert\NotBlank()
      */
-    private $articleTranslations;
+    private string $header;
+
+    /**
+     * @ORM\Column(type="text")
+     * @Groups({"article:read", "article:write"})
+     * @Assert\NotBlank()
+     */
+    private string $content;
 
     /**
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="articles")
-     * @Groups({"article:read", "article:write", "articleCollection:read", "articleItem:read"})
+     * @Groups({"article:read", "article:write"})
      */
-    private $tags;
+    private ?Collection $tags;
 
     /**
      * @ORM\ManyToMany(targetEntity=self::class, inversedBy="children")
      * @MaxDepth(1)
-     * @Groups({"article:read", "article:write", "articleCollection:read", "articleItem:read"})
+     * @Groups({"article:read", "article:write"})
      */
     #[ApiProperty(
         readableLink: true,
         writableLink: true
     )]
-    private $parents;
+    private ?Collection $parents;
 
     /**
      * @ORM\ManyToMany(targetEntity=self::class, mappedBy="parents")
      * @MaxDepth(1)
-     * @Groups({"article:read", "article:write", "articleCollection:read", "articleItem:read"})
+     * @Groups({"article:read", "article:write"})
      */
-    private $children;
+    private ?Collection $children;
 
     /**
      * @ORM\ManyToOne(targetEntity=Game::class, inversedBy="popularArticles")
+     */
+    private ?Game $game;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
      * @Groups({"article:read"})
      */
-    private $game;
+    private int $secondsForReading;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"article:read", "articleCollection:read", "articleItem:read"})
+     * @Groups({"article:read"})
      */
-    private $createdAt;
+    private DateTimeInterface $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"article:read"})
+     */
+    private DateTimeInterface $updatedAt;
 
     #[Pure]
     public function __construct()
     {
-        $this->articleTranslations = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->parents = new ArrayCollection();
         $this->children = new ArrayCollection();
@@ -115,9 +118,26 @@ class Article
     /**
      * @ORM\PrePersist
      */
-    public function setDefaultCreatedAt() : void
+    public function prePersist() : void
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new DateTime();
+        $this->updatedAt = new DateTime();
+        $this->secondsForReading =  $this->calculateReadingTime();
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpdate() : void
+    {
+        $this->updatedAt = new DateTime();
+        $this->secondsForReading = $this->calculateReadingTime();
+    }
+
+    #[Pure]
+    private function calculateReadingTime() : int
+    {
+        return (int) count(explode(" ", $this->content)) * 0.3;
     }
 
     public function getId(): ?int
@@ -125,29 +145,26 @@ class Article
         return $this->id;
     }
 
-    public function getArticleTranslations(): Collection
+    public function getHeader(): ?string
     {
-        return $this->articleTranslations;
+        return $this->header;
     }
 
-    public function addArticleTranslation(ArticleTranslation $articleTranslation): self
+    public function setHeader(string $header): self
     {
-        if (!$this->articleTranslations->contains($articleTranslation)) {
-            $this->articleTranslations[] = $articleTranslation;
-            $articleTranslation->setArticle($this);
-        }
+        $this->header = $header;
 
         return $this;
     }
 
-    public function removeArticleTranslation(ArticleTranslation $articleTranslation): self
+    public function getContent(): ?string
     {
-        if ($this->articleTranslations->removeElement($articleTranslation)) {
-            // set the owning side to null (unless already changed)
-            if ($articleTranslation->getArticle() === $this) {
-                $articleTranslation->setArticle(null);
-            }
-        }
+        return $this->content;
+    }
+
+    public function setContent(string $content): self
+    {
+        $this->content = $content;
 
         return $this;
     }
@@ -233,14 +250,38 @@ class Article
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getSecondsForReading(): ?int
+    {
+        return $this->secondsForReading;
+    }
+
+    public function setSecondsForReading(int $secondsForReading): self
+    {
+        $this->secondsForReading = $secondsForReading;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

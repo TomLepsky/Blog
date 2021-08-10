@@ -5,12 +5,23 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\MediaLibraryRepository;
 use Doctrine\ORM\Mapping as ORM;
+use EasyRdf\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=MediaLibraryRepository::class)
  */
 #[ApiResource(
+    collectionOperations: [
+        'get',
+        'post'
+    ],
+    itemOperations: [
+        'get',
+        'put',
+        'delete'
+    ],
     denormalizationContext: [
         'groups' => ['mediaLibrary:write']
     ],
@@ -24,27 +35,28 @@ class MediaLibrary
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"mediaLibrary:read", "toolCollection:read", "toolItem:read"})
+     * @Groups({"mediaLibrary:read", "tool:read"})
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="blob")
-     * @Groups({"mediaLibrary:read", "mediaLibrary:write"})
+     * @Groups({"mediaLibrary:read", "mediaLibrary:write", "tool:read", "tool:write"})
+     * @Assert\NotBlank()
      */
     private $media;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"mediaLibrary:read", "mediaLibrary:write"})
+     * @Groups({"mediaLibrary:read", "mediaLibrary:write", "tool:read", "tool:write"})
      */
-    private $name;
+    private ?string $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=ToolTranslation::class, mappedBy="media")
+     * @ORM\OneToMany(targetEntity=Tool::class, mappedBy="media")
      * @Groups({"mediaLibrary:read", "mediaLibrary:write"})
      */
-    private $tools;
+    private ?Collection $tools;
 
     public function getId(): ?int
     {

@@ -3,12 +3,10 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\DTO\ToolOutput;
 use App\Repository\ToolRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ToolRepository::class)
@@ -16,27 +14,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     collectionOperations: [
         'get',
-        'post',
-        'getCollection' => [
-            'method' => 'get',
-            'path' => '/tools/collection',
-            'normalization_context' => ['groups' => ['toolCollection:read']],
-            'controller' => 'App\Controller\ToolController::getTranslatableCollection',
-            'output' => ToolOutput::class
-        ]
+        'post'
     ],
     itemOperations: [
         'get',
         'put',
-        'delete',
-        'getItem' => [
-            'method' => 'get',
-            'path' => '/tools/item/{id}',
-            'requirements' => ['id' => '\d+'],
-            'normalization_context' => ['groups' => ['toolItem:read']],
-            'controller' => 'App\Controller\ToolController::getTranslatableItem',
-            'output' => ToolOutput::class
-        ]
+        'delete'
     ],
     denormalizationContext: [
         'groups' => ['tool:write']
@@ -51,68 +34,49 @@ class Tool
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"tool:read", "toolCollection:read", "toolItem:read"})
+     * @Groups({"tool:read", "game:read"})
      */
-    private $id;
+    private int $id;
 
     /**
-     * @ORM\OneToMany(targetEntity=ToolTranslation::class, mappedBy="tool")
-     * @Groups({"tool:read", "tool:write", "toolCollection:read", "toolItem:read"})
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"tool:read", "tool:write", "game:read"})
+     * @Assert\NotBlank()
      */
-    private $toolTranslations;
+    private string $name;
 
     /**
      * @ORM\ManyToOne(targetEntity=MediaLibrary::class, inversedBy="tools")
-     * @Groups({"tool:read", "tool:write", "toolCollection:read", "toolItem:read"})
+     * @Groups({"tool:read", "tool:write"})
      */
-    private $media;
+    private ?MediaLibrary $media;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"tool:read", "tool:write", "toolCollection:read", "toolItem:read"})
+     * @Groups({"tool:read", "tool:write", "game:read"})
+     * @Assert\NotBlank()
      */
-    private $href;
+    private string $href;
 
     /**
      * @ORM\ManyToOne(targetEntity=Game::class, inversedBy="tools")
-     * @Groups({"tool:read", "tool:write", "toolCollection:read", "toolItem:read"})
+     * @Groups({"tool:read", "tool:write"})
      */
-    private $game;
-
-    public function __construct()
-    {
-        $this->toolTranslations = new ArrayCollection();
-    }
+    private ?Game $game;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-
-    public function getToolTranslations(): Collection
+    public function getName(): ?string
     {
-        return $this->toolTranslations;
+        return $this->name;
     }
 
-    public function addToolTranslation(ToolTranslation $toolTranslation): self
+    public function setName(string $name): self
     {
-        if (!$this->toolTranslations->contains($toolTranslation)) {
-            $this->toolTranslations[] = $toolTranslation;
-            $toolTranslation->setTool($this);
-        }
-
-        return $this;
-    }
-
-    public function removeToolTranslation(ToolTranslation $toolTranslation): self
-    {
-        if ($this->toolTranslations->removeElement($toolTranslation)) {
-            // set the owning side to null (unless already changed)
-            if ($toolTranslation->getTool() === $this) {
-                $toolTranslation->setTool(null);
-            }
-        }
+        $this->name = $name;
 
         return $this;
     }

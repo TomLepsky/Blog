@@ -21,30 +21,4 @@ class ArticleRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Article::class);
     }
-
-    private function prepareTranslatable($localeName) : QueryBuilder
-    {
-        return $this->createQueryBuilder('translatable')
-            ->select('translatable.id, translation.header, translation.content, locale.name as locale_name, translatable.createdAt, translation.updatedAt, translation.secondsForReading')
-            ->innerJoin(ArticleTranslation::class, 'translation', 'WITH', 'translatable.id = translation.article')
-            ->innerJoin(Locale::class, 'locale', 'WITH', 'translation.locale = locale.id')
-            ->where('locale.name = :locale_name')
-            ->setParameter('locale_name', $localeName);
-    }
-
-    public function getTranslatableCollection(string $localeName)
-    {
-        return $this->prepareTranslatable($localeName)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function getTranslatableItem(int $id, string $localeName)
-    {
-        return $this->prepareTranslatable($localeName)
-            ->andWhere('translatable.id = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getResult();
-    }
 }

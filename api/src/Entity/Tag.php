@@ -3,12 +3,13 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\DTO\TagOutput;
 use App\Repository\TagRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TagRepository::class)
@@ -16,27 +17,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     collectionOperations: [
         'get',
-        'post',
-        'getCollection' => [
-            'method' => 'get',
-            'path' => '/tags/collection',
-            'normalization_context' => ['groups' => ['tagCollection:read']],
-            'controller' => 'App\Controller\TagController::getTranslatableCollection',
-            'output' => TagOutput::class
-        ]
+        'post'
     ],
     itemOperations: [
         'get',
         'put',
-        'delete',
-        'getItem' => [
-            'method' => 'get',
-            'path' => '/tags/item/{id}',
-            'requirements' => ['id' => '\d+'],
-            'normalization_context' => ['groups' => ['tagItem:read']],
-            'controller' => 'App\Controller\TagController::getTranslatableItem',
-            'output' => TagOutput::class
-        ]
+        'delete'
     ],
     denormalizationContext: [
         'groups' => ['tag:write']
@@ -51,29 +37,30 @@ class Tag
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"tag:read", "articleCollection:read", "tagCollection:read", "tagItem:read", "articleCollection:read", "articleItem:read"})
+     * @Groups({"tag:read", "article:read", "game:read"})
      */
-    private $id;
+    private int $id;
 
     /**
-     * @ORM\OneToMany(targetEntity=TagTranslation::class, mappedBy="tag", orphanRemoval=true)
-     * @Groups({"tag:read", "tag:write", "articleCollection:read", "tagCollection:read", "tagItem:read"})
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"tag:read", "tag:write", "article:read", "game:read"})
+     * @Assert\NotBlank()
      */
-    private $tagTranslations;
+    private string $name;
 
     /**
      * @ORM\ManyToMany(targetEntity=Article::class, mappedBy="tags")
      */
-    private $articles;
+    private ?Collection $articles;
 
     /**
      * @ORM\ManyToOne(targetEntity=Game::class, inversedBy="tags")
      */
-    private $game;
+    private ?Game $game;
 
+    #[Pure]
     public function __construct()
     {
-        $this->tagTranslations = new ArrayCollection();
         $this->articles = new ArrayCollection();
     }
 
@@ -82,36 +69,18 @@ class Tag
         return $this->id;
     }
 
-    public function getTagTranslations(): ?Collection
+    public function getName(): ?string
     {
-        return $this->tagTranslations;
+        return $this->name;
     }
 
-    public function addTagTranslation(TagTranslation $tagTranslation): self
+    public function setName(string $name): self
     {
-        if (!$this->tagTranslations->contains($tagTranslation)) {
-            $this->tagTranslations[] = $tagTranslation;
-            $tagTranslation->setTag($this);
-        }
+        $this->name = $name;
 
         return $this;
     }
 
-    public function removeTagTranslation(TagTranslation $tagTranslation): self
-    {
-        if ($this->tagTranslations->removeElement($tagTranslation)) {
-            // set the owning side to null (unless already changed)
-            if ($tagTranslation->getTag() === $this) {
-                $tagTranslation->setTag(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Article[]
-     */
     public function getArticles(): Collection
     {
         return $this->articles;

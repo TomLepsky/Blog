@@ -25,5 +25,4 @@ services:
         resource: '../src/Controller/'
         tags: [ 'controller.service_arguments' ]
         
-    'App\DataTransformer\ArticleTranslationInputDataTransformer': ~
-    'App\DataTransformer\ArticleOutputDataTransformer': ~
+#    'App\DataTransformer\ArticleOutputDataTransformer': ~
