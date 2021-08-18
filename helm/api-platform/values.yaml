@@ -23,9 +23,9 @@ php:
 
 
 
-nginx:
+caddy:
   image:
-    repository: "registry.digitalocean.com/wowvendor/blog/nginx"
+    repository: "registry.digitalocean.com/wowvendor/blog/caddy"
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: "latest"
