@@ -81,6 +81,7 @@ jobs:
         run: |
           helm upgrade api-platform helm/api-platform \
           --namespace=blog-frontend \
+          --install \
           --set secret=aAFGnlkvas \
           --set-string pwa.image.tag=${GITHUB_SHA::8} \
           --set-string caddy.image.tag=${GITHUB_SHA::8} \
