@@ -49,7 +49,7 @@ mysql:
   port: 3206
   Username: "hide"
   Password: "hide"
-  Database: "api"
+  Database: "blogapi"
 
 imagePullSecrets: 
   - name: registry-wowvendor
