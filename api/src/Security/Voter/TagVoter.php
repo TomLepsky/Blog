@@ -4,6 +4,7 @@ namespace App\Security\Voter;
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
 use App\Entity\Tag;
+use Symfony\Component\Security\Core\Authentication\Token\NullToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -21,6 +22,10 @@ class TagVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
+        if ($token instanceof NullToken) {
+            throw new AuthenticationException('No API token provided');
+        }
+
         $user = $token->getUser();
         if (null === $user || (!$user instanceof UserInterface)) {
             throw new AuthenticationException('Authentication failed!');

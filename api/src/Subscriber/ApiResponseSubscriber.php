@@ -28,9 +28,9 @@ class ApiResponseSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents() : array
     {
         return [
-            KernelEvents::VIEW => ['onKernelView', 20],
-            KernelEvents::RESPONSE => ['onKernelResponse', 10],
-            KernelEvents::EXCEPTION => ['onKernelException', 1]
+//            KernelEvents::VIEW => ['onKernelView', 20],
+//            KernelEvents::RESPONSE => ['onKernelResponse', 10],
+//            KernelEvents::EXCEPTION => ['onKernelException', 1]
         ];
     }
 

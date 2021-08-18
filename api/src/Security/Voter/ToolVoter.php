@@ -3,6 +3,7 @@
 namespace App\Security\Voter;
 
 use App\Entity\Tool;
+use Symfony\Component\Security\Core\Authentication\Token\NullToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -17,6 +18,10 @@ class ToolVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
+        if ($token instanceof NullToken) {
+            throw new AuthenticationException('No API token provided');
+        }
+
         $user = $token->getUser();
         if (null === $user || (!$user instanceof UserInterface)) {
             throw new AuthenticationException('Authentication failed!');

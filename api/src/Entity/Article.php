@@ -24,16 +24,16 @@ use JetBrains\PhpStorm\Pure;
     collectionOperations: [
         'get',
         'post' => [
-            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
+//            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
         ]
     ],
     itemOperations: [
         'get',
         'put' => [
-            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
+//            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
         ],
         'delete' => [
-            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
+//            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
         ]
     ],
     denormalizationContext: [

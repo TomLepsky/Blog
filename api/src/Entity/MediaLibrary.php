@@ -5,8 +5,9 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\MediaLibraryRepository;
 use App\Security\Voter\VoterAttribute;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use EasyRdf\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -17,16 +18,16 @@ use Symfony\Component\Validator\Constraints as Assert;
     collectionOperations: [
         'get',
         'post' => [
-            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
+//            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
         ]
     ],
     itemOperations: [
         'get',
         'put' => [
-            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
+//            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
         ],
         'delete' => [
-            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
+//            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
         ]
     ],
     denormalizationContext: [
@@ -65,6 +66,10 @@ class MediaLibrary
      */
     private ?Collection $tools;
 
+    public function __construct()
+    {
+        $this->tools = new ArrayCollection();
+    }
     public function getId(): ?int
     {
         return $this->id;
