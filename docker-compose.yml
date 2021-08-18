@@ -68,7 +68,7 @@ services:
       - "33060:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=Lpt98t3333
-      - MYSQL_DATABASE=app
+      - MYSQL_DATABASE=blogapi
     volumes:
       - ./.docker/mysql/data:/var/lib/mysql
     command: --default-authentication-plugin=mysql_native_password --max_allowed_packet=1073741824
