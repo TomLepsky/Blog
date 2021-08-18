@@ -1,5 +1,5 @@
 # создаем базу
-CREATE DATABASE IF NOT EXISTS `app`;
+CREATE DATABASE IF NOT EXISTS `blogapi`;
 
 # добавляем права руту
 CREATE USER 'root'@'*' IDENTIFIED BY 'Lpt98t3333';
