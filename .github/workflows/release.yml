@@ -23,7 +23,7 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -f api/docker/nginx/Dockerfile  -t ${{ secrets.DOCKER_REGISTRY_URL }}blog/nginx:latest -t  ${{ secrets.DOCKER_REGISTRY_URL }}blog/nginx:${GITHUB_SHA::8} --target prod
+          docker build -f api/docker/nginx/Dockerfile  -t ${{ secrets.DOCKER_REGISTRY_URL }}blog/nginx:latest -t  ${{ secrets.DOCKER_REGISTRY_URL }}blog/nginx:${GITHUB_SHA::8} --target prod .
 
       - name: Push image to GitHub Container Registry
         run: |
