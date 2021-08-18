@@ -14,7 +14,7 @@ php:
   appDebug: "0"
   appSecret: ""
   corsAllowOrigin: "^https://blog\\.feature\\.zone|https://dev\\.feature\\.zone|http://localhost:3000$"
-  trustedHosts: "^127\\.0\\.0\\.1|localhost|.*\\.feature\\.zone$"
+  trustedHosts: "^127\\.0\\.0\\.1|localhost|api-platform|.*\\.feature\\.zone$"
   trustedProxies:
     - "127.0.0.1"
     - "10.0.0.0/8"
@@ -23,9 +23,9 @@ php:
 
 
 
-caddy:
+nginx:
   image:
-    repository: "registry.digitalocean.com/wowvendor/blog/caddy"
+    repository: "registry.digitalocean.com/wowvendor/blog/nginx"
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: "latest"
@@ -98,17 +98,17 @@ ingress:
      hosts:
        - blog.feature.zone
 
-resources: {}
+resources: 
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+   limits:
+     cpu: 100m
+     memory: 228Mi
+   requests:
+     cpu: 100m
+     memory: 228Mi
 
 autoscaling:
   enabled: false

@@ -28,11 +28,11 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}-caddy
+        - name: {{ .Chart.Name }}-nginx
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.caddy.image.repository }}:{{ .Values.caddy.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.caddy.image.pullPolicy }}
+          image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
           env:
             - name: SERVER_NAME
               value: :80

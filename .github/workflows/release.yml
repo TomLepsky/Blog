@@ -10,7 +10,7 @@ env:
 
 jobs:
 
-  build-caddy:
+  build-nginx:
     runs-on: [self-hosted]
 
     steps:
@@ -23,12 +23,12 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -t ${{ secrets.DOCKER_REGISTRY_URL }}blog/caddy:latest -t  ${{ secrets.DOCKER_REGISTRY_URL }}blog/caddy:${GITHUB_SHA::8} api --target api_platform_caddy
+          docker build -t ${{ secrets.DOCKER_REGISTRY_URL }}blog/nginx:latest -t  ${{ secrets.DOCKER_REGISTRY_URL }}blog/nginx:${GITHUB_SHA::8} -f api/docker/nginx/Dockerfile --target prod
 
       - name: Push image to GitHub Container Registry
         run: |
-          docker push ${{ secrets.DOCKER_REGISTRY_URL }}blog/caddy:latest
-          docker push ${{ secrets.DOCKER_REGISTRY_URL }}blog/caddy:${GITHUB_SHA::8}
+          docker push ${{ secrets.DOCKER_REGISTRY_URL }}blog/nginx:latest
+          docker push ${{ secrets.DOCKER_REGISTRY_URL }}blog/nginx:${GITHUB_SHA::8}
 
   build-php:
     runs-on: [ self-hosted ]
@@ -53,7 +53,7 @@ jobs:
   deploy-prod:
     needs:
       - build-php
-      - build-caddy
+      - build-nginx
     runs-on: [self-hosted]
 
     steps:
@@ -84,10 +84,9 @@ jobs:
           --install \
           --set secret=aAFGnlkvas \
           --set-string pwa.image.tag=${GITHUB_SHA::8} \
-          --set-string caddy.image.tag=${GITHUB_SHA::8} \
+          --set-string nginx.image.tag=${GITHUB_SHA::8} \
           --set-string php.image.tag=${GITHUB_SHA::8} \
           --set-string mysql.Username=${{ secrets.DB_USERNAME }} \
           --set-string mysql.Password=${{ secrets.DB_PASSWORD }} \
           --kubeconfig=$HOME/.kube/config \
           --wait
-
