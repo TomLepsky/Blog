@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 class ApiResponseSubscriber implements EventSubscriberInterface
@@ -24,14 +25,12 @@ class ApiResponseSubscriber implements EventSubscriberInterface
         'app_swaggerui_docs',
     ];
 
-
-    #[ArrayShape([KernelEvents::VIEW => "array", KernelEvents::RESPONSE => "array", KernelEvents::EXCEPTION => "array"])]
     public static function getSubscribedEvents() : array
     {
         return [
             KernelEvents::VIEW => ['onKernelView', 20],
             KernelEvents::RESPONSE => ['onKernelResponse', 10],
-            KernelEvents::EXCEPTION => ['onKernelException', 0]
+            KernelEvents::EXCEPTION => ['onKernelException', 1]
         ];
     }
 
@@ -96,53 +95,70 @@ class ApiResponseSubscriber implements EventSubscriberInterface
         $exception = $event->getThrowable();
         $response = new JsonResponse();
 
-        if ($exception instanceof NotFoundHttpException) {
-            $response->setStatusCode(404);
-            $response->setData(
-                [
-                    'status' => 404,
-                    'error' => [
-                        'name' => 'not_found',
-                        'message' => $exception->getMessage(),
-                    ],
-                ]
-            );
-        } elseif ($exception instanceof NotEncodableValueException) {
-            $response->setStatusCode(400);
-            $response->setData(
-                [
-                    'status' => 400,
-                    'error' => [
-                        'name' => 'syntax_error',
-                        'message' => 'JSON syntax error',
-                    ],
-                ]
-            );
-        } elseif ($exception instanceof InvalidArgumentException) {
-            $response->setStatusCode(400);
-            $response->setData(
-                [
-                    'status' => 400,
-                    'error' => [
-                        'name' => 'invalid_type',
-                        'message' => $exception->getMessage(),
-                    ],
-                ]
-            );
-        } elseif ($exception instanceof HttpExceptionInterface) {
-            $response->setStatusCode($exception->getStatusCode());
-            $response->headers->replace($exception->getHeaders());
-        } else {
-            $response->setStatusCode(500);
-            $response->setData(
-                [
-                    'status' => 500,
-                    'error' => [
-                        'name' => 'server_error',
-                        'message' => $exception->getMessage(),
-                    ],
-                ]
-            );
+        switch (true) {
+            case $exception instanceof NotFoundHttpException:
+                $response->setStatusCode(404);
+                $response->setData(
+                    [
+                        'status' => 404,
+                        'error' => [
+                            'name' => 'not_found',
+                            'message' => $exception->getMessage(),
+                        ],
+                    ]
+                );
+                break;
+            case $exception instanceof NotEncodableValueException:
+                $response->setStatusCode(400);
+                $response->setData(
+                    [
+                        'status' => 400,
+                        'error' => [
+                            'name' => 'syntax_error',
+                            'message' => 'JSON syntax error',
+                        ],
+                    ]
+                );
+                break;
+            case $exception instanceof InvalidArgumentException:
+                $response->setStatusCode(400);
+                $response->setData(
+                    [
+                        'status' => 400,
+                        'error' => [
+                            'name' => 'invalid_type',
+                            'message' => $exception->getMessage(),
+                        ],
+                    ]
+                );
+                break;
+            case $exception instanceof HttpExceptionInterface:
+                $response->setStatusCode($exception->getStatusCode());
+                $response->headers->replace($exception->getHeaders());
+                break;
+            case $exception instanceof AccessDeniedException:
+                $response->setStatusCode(401);
+                $response->setData(
+                    [
+                        'status' => 401,
+                        'error' => [
+                            'name' => 'authentication_error',
+                            'message' => $exception->getMessage(),
+                        ],
+                    ]
+                );
+                break;
+            default:
+                $response->setStatusCode(500);
+                $response->setData(
+                    [
+                        'status' => 500,
+                        'error' => [
+                            'name' => 'server_error',
+                            'message' => $exception->getMessage(),
+                        ],
+                    ]
+                );
         }
 
         $event->setResponse($response);

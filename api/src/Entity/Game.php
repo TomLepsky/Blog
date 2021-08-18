@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\GameRepository;
+use App\Security\Voter\VoterAttribute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,12 +17,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     collectionOperations: [
         'get',
-        'post'
+        'post' => [
+            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
+        ]
     ],
     itemOperations: [
         'get',
-        'put',
-        'delete'
+        'put' => [
+            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
+        ],
+        'delete' => [
+            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
+        ]
     ],
     denormalizationContext: [
         'groups' => ['game:write']

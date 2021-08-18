@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Security\Voter\VoterAttribute;
 
 /**
  * @ORM\Entity(repositoryClass=TagRepository::class)
@@ -17,12 +18,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     collectionOperations: [
         'get',
-        'post'
+        'post' => [
+            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
+        ]
     ],
     itemOperations: [
         'get',
-        'put',
-        'delete'
+        'put' => [
+            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
+        ],
+        'delete' => [
+            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
+        ]
     ],
     denormalizationContext: [
         'groups' => ['tag:write']
@@ -58,7 +65,6 @@ class Tag
      */
     private ?Game $game;
 
-    #[Pure]
     public function __construct()
     {
         $this->articles = new ArrayCollection();

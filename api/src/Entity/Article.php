@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ArticleRepository;
+use App\Security\Voter\VoterAttribute;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -22,12 +23,18 @@ use JetBrains\PhpStorm\Pure;
 #[ApiResource(
     collectionOperations: [
         'get',
-        'post'
+        'post' => [
+            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
+        ]
     ],
     itemOperations: [
         'get',
-        'put',
-        'delete'
+        'put' => [
+            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
+        ],
+        'delete' => [
+            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
+        ]
     ],
     denormalizationContext: [
         'groups' => ['article:write']

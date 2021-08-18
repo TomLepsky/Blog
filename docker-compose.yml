@@ -15,6 +15,11 @@ services:
       timeout: 3s
       retries: 3
       start_period: 30s
+    environment:
+      - REMOTE_AUTH_SERVER_ADDR=http://172.17.0.1:8808/
+      - URI_GET_BY_TOKEN=users/get-by-token
+      - URI_LOGIN=authenticate
+      - REFRESH_TOKEN=refresh-token
 
   pwa:
     build:
