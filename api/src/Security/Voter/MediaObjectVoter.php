@@ -2,18 +2,18 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\MediaLibrary;
+use App\Entity\MediaObject;
 use Symfony\Component\Security\Core\Authentication\Token\NullToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class MediaLibraryVoter extends Voter
+class MediaObjectVoter extends Voter
 {
     protected function supports(string $attribute, $subject): bool
     {
-        return in_array($attribute, VoterAttribute::getAttributes()) && $subject instanceof MediaLibrary;
+        return in_array($attribute, VoterAttribute::getAttributes()) && $subject instanceof MediaObject;
     }
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
@@ -28,6 +28,6 @@ class MediaLibraryVoter extends Voter
         }
 
         $permissions = $user->getPermissions();
-        return isset($permissions[MediaLibrary::class]) ? $permissions[MediaLibrary::class]->{$attribute} ?? false : false;
+        return isset($permissions[MediaObject::class]) ? $permissions[MediaObject::class]->{$attribute} ?? false : false;
     }
 }

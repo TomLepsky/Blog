@@ -74,6 +74,12 @@ class Article
     private ?Collection $tags;
 
     /**
+     * @ORM\ManyToMany(targetEntity=MediaObject::class, inversedBy="articles")
+     * @Groups({"article:read", "article:write"})
+     */
+    private ?Collection $mediaObjects;
+
+    /**
      * @ORM\ManyToMany(targetEntity=self::class, inversedBy="children")
      * @MaxDepth(1)
      * @Groups({"article:read", "article:write"})
@@ -114,12 +120,12 @@ class Article
      */
     private DateTimeInterface $updatedAt;
 
-    #[Pure]
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->parents = new ArrayCollection();
         $this->children = new ArrayCollection();
+        $this->mediaObjects = new ArrayCollection();
     }
 
     /**
@@ -193,6 +199,27 @@ class Article
     public function removeTag(Tag $tag): self
     {
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    public function getMediaObjects(): ?Collection
+    {
+        return $this->mediaObjects;
+    }
+
+    public function addMediaObject(MediaObject $mediaObject): self
+    {
+        if (!$this->mediaObjects->contains($mediaObject)) {
+            $this->mediaObjects[] = $mediaObject;
+        }
+
+        return $this;
+    }
+
+    public function removeMediaObject(MediaObject $mediaObject): self
+    {
+        $this->mediaObjects->removeElement($mediaObject);
 
         return $this;
     }

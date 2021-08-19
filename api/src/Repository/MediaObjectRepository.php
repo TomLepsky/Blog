@@ -20,7 +20,7 @@ class MediaObjectRepository extends ServiceEntityRepository
     }
 
     // /**
-    //  * @return MediaObject[] Returns an array of MediaLibrary objects
+    //  * @return MediaObject[] Returns an array of MediaObject objects
     //  */
     /*
     public function findByExampleField($value)
