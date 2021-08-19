@@ -89,10 +89,11 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-read-timeout: '800'
     nginx.ingress.kubernetes.io/proxy-send-timeout: '800'
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
   hosts:
     - host: blog.feature.zone
       paths:
-        - /api
+        - /api(/|$)(.*)
   tls:
    - secretName: echo-tls
      hosts:
