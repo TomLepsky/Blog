@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=MediaLibraryRepository::class)
+ * @ORM\Entity(repositoryClass=MediaObjectRepository::class)
  */
 #[ApiResource(
     collectionOperations: [
@@ -37,7 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'groups' => ['mediaLibrary:read']
     ],
 )]
-class MediaLibrary
+class MediaObject
 {
     /**
      * @ORM\Id
