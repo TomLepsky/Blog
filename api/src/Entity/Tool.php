@@ -53,17 +53,17 @@ class Tool
     private string $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity=MediaLibrary::class, inversedBy="tools")
+     * @ORM\ManyToOne(targetEntity=MediaObject::class, inversedBy="tools")
      * @Groups({"tool:read", "tool:write"})
      */
-    private ?MediaLibrary $media;
+    private ?MediaObject $mediaObject;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({"tool:read", "tool:write", "game:read"})
      * @Assert\NotBlank()
      */
-    private string $href;
+    private ?string $href;
 
     /**
      * @ORM\ManyToOne(targetEntity=Game::class, inversedBy="tools")
@@ -88,14 +88,14 @@ class Tool
         return $this;
     }
 
-    public function getMedia(): ?MediaLibrary
+    public function getMediaObject(): ?MediaObject
     {
-        return $this->media;
+        return $this->mediaObject;
     }
 
-    public function setMedia(?MediaLibrary $media): self
+    public function setMedia(?MediaObject $mediaObject): self
     {
-        $this->media = $media;
+        $this->mediaObject = $mediaObject;
 
         return $this;
     }
