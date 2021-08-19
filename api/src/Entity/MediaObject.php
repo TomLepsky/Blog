@@ -168,4 +168,14 @@ class MediaObject
     {
         return $this->articles;
     }
+
+    public function getContentUrl(): ?string
+    {
+        return $this->contentUrl;
+    }
+
+    public function setContentUrl(?string $contentUrl): void
+    {
+        $this->contentUrl = $contentUrl;
+    }
 }

@@ -1,10 +1,12 @@
 <?php
 
+namespace App\Serializer\Normalizer;
+
+
 use App\Entity\MediaObject;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Vich\UploaderBundle\Storage\StorageInterface;
 
 class MediaObjectNormalizer implements ContextAwareNormalizerInterface, NormalizerAwareInterface
@@ -19,8 +21,6 @@ class MediaObjectNormalizer implements ContextAwareNormalizerInterface, Normaliz
 
     public function supportsNormalization($data, string $format = null, array $context = []) : bool
     {
-        print_r("qwerty");
-        exit();
         if (isset($context[self::ALREADY_CALLED])) {
             return false;
         }
