@@ -22,43 +22,53 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  */
 #[ApiResource(
     collectionOperations: [
-    'get',
-    'post' => [
-//            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
-        'controller' => CreateMediaObjectAction::class,
-        'deserialize' => false,
-        'validation_groups' => ['Default', 'mediaObject:create'],
-        'openapi_context' => [
-            'requestBody' => [
-                'content' => [
-                    'multipart/form-data' => [
-                        'schema' => [
-                            'type' => 'object',
-                            'properties' => [
-                                'file' => [
-                                    'type' => 'string',
-                                    'format' => 'binary',
+        'get' => [
+            'method' => 'get',
+            'path' => '/media-objects',
+        ],
+        'post' => [
+            'method' => 'post',
+            'path' => '/media-objects',
+    //            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
+            'controller' => CreateMediaObjectAction::class,
+            'deserialize' => false,
+            'validation_groups' => ['Default', 'mediaObject:create'],
+            'openapi_context' => [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'file' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
                                 ],
                             ],
                         ],
                     ],
                 ],
             ],
-        ],
-    ]
-],
+        ]
+    ],
     itemOperations: [
-    'get',
-    'delete' => [
-//            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
-    ]
-],
+        'get' => [
+            'method' => 'get',
+            'path' => '/media-objects/{id}',
+        ],
+        'delete' => [
+            'method' => 'delete',
+            'path' => '/media-objects/{id}',
+    //            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
+        ]
+    ],
     denormalizationContext: [
-    'groups' => ['mediaObject:write']
-],
+        'groups' => ['mediaObject:write']
+    ],
     normalizationContext: [
-    'groups' => ['mediaObject:read']
-],
+        'groups' => ['mediaObject:read']
+    ],
 )]
 class MediaObject
 {
