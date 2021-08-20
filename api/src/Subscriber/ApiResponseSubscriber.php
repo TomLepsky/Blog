@@ -4,6 +4,7 @@ namespace App\Subscriber;
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
 use ApiPlatform\Core\Exception\InvalidArgumentException;
+use Doctrine\Common\Util\Debug;
 use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,9 +29,9 @@ class ApiResponseSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents() : array
     {
         return [
-//            KernelEvents::VIEW => ['onKernelView', 20],
-//            KernelEvents::RESPONSE => ['onKernelResponse', 10],
-//            KernelEvents::EXCEPTION => ['onKernelException', 1]
+            KernelEvents::VIEW => ['onKernelView', 20],
+            KernelEvents::RESPONSE => ['onKernelResponse', 10],
+            KernelEvents::EXCEPTION => ['onKernelException', 1]
         ];
     }
 
@@ -46,8 +47,9 @@ class ApiResponseSubscriber implements EventSubscriberInterface
     {
         $context = $event->getRequest()->attributes->get('_api_normalization_context');
         $route = $event->getRequest()->attributes->get('_route');
+        $acceptFormat = $event->getRequest()->headers->get('accept-format');
 
-        if (!in_array($route, $this->excludedRoutes)) {
+        if (!in_array($route, $this->excludedRoutes) && $acceptFormat === 'application/json') {
             $responseObject = $event->getResponse();
             $statusCode = $responseObject->getStatusCode();
             if ($statusCode < 300) {
