@@ -32,21 +32,8 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
 
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
-        /*
+
         $content = json_decode($this->controller->getResponseByToken($identifier));
-        */
-
-        $tagPermissions = new StdClass();
-        $tagPermissions->canRead = true;
-        $tagPermissions->canCreate = true;
-        $tagPermissions->canEdit = true;
-        $tagPermissions->canDelete = true;
-
-        $content = new StdClass();
-        $content->id = 21;
-        $content->login = 'Tom Lepsky';
-        $content->permissions = [Tag::class => $tagPermissions, Tool::class => $tagPermissions];
-        $content->token = 'Arrrrr!!';
 
         $userInput = new UserInput();
         $userInput->id = $content->id;
