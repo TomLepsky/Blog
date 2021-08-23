@@ -29,7 +29,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'post' => [
             'method' => 'post',
             'path' => '/media-objects',
-    //            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
+                "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
             'controller' => CreateMediaObjectAction::class,
             'deserialize' => false,
             'validation_groups' => ['Default', 'mediaObject:create'],
@@ -60,7 +60,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'delete' => [
             'method' => 'delete',
             'path' => '/media-objects/{id}',
-    //            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
+                "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
         ]
     ],
     denormalizationContext: [
