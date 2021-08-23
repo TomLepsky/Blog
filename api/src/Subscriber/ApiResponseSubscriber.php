@@ -49,7 +49,7 @@ class ApiResponseSubscriber implements EventSubscriberInterface
         $route = $event->getRequest()->attributes->get('_route');
         $acceptFormat = $event->getRequest()->headers->get('accept-format');
 
-        if (!in_array($route, $this->excludedRoutes) && $acceptFormat === 'application/json') {
+        if (!in_array($route, $this->excludedRoutes) && $acceptFormat === 'wv.api+json') {
             $responseObject = $event->getResponse();
             $statusCode = $responseObject->getStatusCode();
             if ($statusCode < 300) {
