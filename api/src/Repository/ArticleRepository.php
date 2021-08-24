@@ -21,4 +21,14 @@ class ArticleRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Article::class);
     }
+
+    public function getQuantity(string $gameId) : int
+    {
+        return (int) $this->createQueryBuilder('a')
+            ->select('count(a.id)')
+            ->where('a.game = :gameId')
+            ->setParameter('gameId', $gameId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

@@ -29,7 +29,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'post' => [
             'method' => 'post',
             'path' => '/media-objects',
-                "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
+//                "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
             'controller' => CreateMediaObjectAction::class,
             'deserialize' => false,
             'validation_groups' => ['Default', 'mediaObject:create'],
@@ -60,7 +60,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'delete' => [
             'method' => 'delete',
             'path' => '/media-objects/{id}',
-                "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
+//                "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
         ]
     ],
     denormalizationContext: [
@@ -99,9 +99,15 @@ class MediaObject
     private ?int $fileSize;
 
     /**
-     * @Groups({"mediaObject:read"})
+     * @Groups({"mediaObject:read", "gameItem:read", "gameCollection:read"})
      */
-    public ?string $contentUrl = null;
+    private ?string $original = null;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     * @Groups({"mediaObject:read", "gameItem:read", "gameCollection:read"})
+     */
+    private ?string $placeholder = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAECAMAAACA5l7/AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAV1BMVEUAAAB6oZtKaWZxn5aGraUhPT9Lamk8VlYmQUIwd3hig35ihYApQD+U18lhfXpZcW6CqKAPJysvRENDX15EYWBIaGcpRkgpPj8xcG8zgH0xZWQ3enoAAACq7IQCAAAAHHRSTlMAAAAAAAAAAAAAGyQCBIOvEwNd1u5ZBUal3HoG3jmIAgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQflCBgKEBx81N/oAAAALklEQVQI12NgYGBg5OLmYWIAAWZePn4BFhCLVVBIWESUjR3I5BATl5CUkuZkAAAXPQF7p/dzxAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0wOC0yNFQxMDoxNjoyOC0wNDowMGt2sFYAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMDgtMjRUMTA6MTY6MjgtMDQ6MDAaKwjqAAAAAElFTkSuQmCC";
 
     /**
      * @ORM\Column(type="datetime")
@@ -179,13 +185,23 @@ class MediaObject
         return $this->articles;
     }
 
-    public function getContentUrl(): ?string
+    public function getOriginal(): ?string
     {
-        return $this->contentUrl;
+        return $this->original;
     }
 
-    public function setContentUrl(?string $contentUrl): void
+    public function setOriginal(?string $original): void
     {
-        $this->contentUrl = $contentUrl;
+        $this->original = $original;
+    }
+
+    public function getPlaceholder(): ?string
+    {
+        return $this->placeholder;
+    }
+
+    public function setPlaceholder(?string $placeholder): void
+    {
+        $this->placeholder = $placeholder;
     }
 }

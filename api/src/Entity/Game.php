@@ -3,72 +3,118 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\DTO\GameOutput;
 use App\Repository\GameRepository;
 use App\Security\Voter\VoterAttribute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=GameRepository::class)
+ * @ORM\Table(name="game",indexes={
+ *     @ORM\Index(name="slug_index", columns={"slug"})
+ * })
+ * @UniqueEntity("slug")
  */
 #[ApiResource(
     collectionOperations: [
-        'get',
+        'get' => [
+            "normalization_context" => [
+                "groups" => ["gameCollection:read"],
+                "skip_null_values" => true
+            ],
+        ],
         'post' => [
-            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
+//            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
         ]
     ],
     itemOperations: [
-        'get',
+        'get' => [
+            "normalization_context" => [
+                "groups" => ["gameItem:read"],
+//                "skip_null_values" => true
+            ],
+        ],
         'put' => [
-            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
+//            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
         ],
         'delete' => [
-            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
+//            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
         ]
     ],
     denormalizationContext: [
         'groups' => ['game:write']
     ],
-    normalizationContext: [
-        'groups' => ['game:read']
-    ],
+    output: GameOutput::class
 )]
-class Game
+class Game extends MetaInformation
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"game:read"})
+     * @Groups({"gameItem:read", "gameCollection:read"})
      */
     private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"game:read", "game:write"})
+     * @Groups({"gameItem:read", "gameCollection:read", "game:write"})
      * @Assert\NotBlank()
      */
     private string $name;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"gameItem:read", "gameCollection:read", "game:write"})
+     * @Assert\NotBlank()
+     * @Assert\Regex("/[\w\d-]+/")
+     */
+    private string $slug;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"game:write"})
+     */
+    private int $weight = 100;
+
+    /**
+     * @Groups({"gameItem:read", "gameCollection:read"})
+     */
+    private int $articlesCount;
+
+    /**
+     * @ORM\OneToOne(targetEntity=MediaObject::class)
+     * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
+     * @Groups({"gameItem:read", "gameCollection:read", "game:write"})
+     */
+    private ?MediaObject $image;
+
+    /**
      * @ORM\OneToMany(targetEntity=Article::class, mappedBy="game")
-     * @Groups({"game:read", "game:write"})
+     * @Groups({"game:write"})
+     */
+    private ?Collection $articles;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Article::class, mappedBy="popularGame")
+     * @Groups({"game:write"})
      */
     private ?Collection $popularArticles;
 
     /**
      * @ORM\OneToMany(targetEntity=Tag::class, mappedBy="game")
-     * @Groups({"game:read", "game:write"})
+     * @Groups({"game:write"})
      */
     private ?Collection $tags;
 
     /**
      * @ORM\OneToMany(targetEntity=Tool::class, mappedBy="game")
-     * @Groups({"game:read", "game:write"})
+     * @Groups({"game:write"})
      */
     private ?Collection $tools;
 
@@ -79,12 +125,12 @@ class Game
         $this->tools = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -115,6 +161,30 @@ class Game
         if ($this->popularArticles->removeElement($popularArticle)) {
             if ($popularArticle->getGame() === $this) {
                 $popularArticle->setGame(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getArticles(): ?Collection
+    {
+        return $this->articles;
+    }
+
+    public function addArticle(Article $article): self
+    {
+        if (!$this->articles->contains($article)) {
+            $this->articles[] = $article;
+            $article->setGame($this);
+        }
+        return $this;
+    }
+
+    public function removeArticle(Article $article): self
+    {
+        if ($this->articles->removeElement($article)) {
+            if ($article->getGame() === $this) {
+                $article->setGame(null);
             }
         }
         return $this;
@@ -172,5 +242,45 @@ class Game
         }
 
         return $this;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): void
+    {
+        $this->slug = $slug;
+    }
+
+    public function getWeight(): int
+    {
+        return $this->weight;
+    }
+
+    public function setWeight(int $weight): void
+    {
+        $this->weight = $weight;
+    }
+
+    public function getImage(): ?MediaObject
+    {
+        return $this->image;
+    }
+
+    public function setImage(?MediaObject $image): void
+    {
+        $this->image = $image;
+    }
+
+    public function getArticlesCount(): int
+    {
+        return $this->articlesCount;
+    }
+
+    public function setArticlesCount(int $articlesCount): void
+    {
+        $this->articlesCount = $articlesCount;
     }
 }

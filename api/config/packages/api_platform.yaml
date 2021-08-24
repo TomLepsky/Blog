@@ -19,6 +19,7 @@ api_platform:
         enabled: false
     # Good cache defaults for REST APIs
     defaults:
+#        url_generation_strategy: !php/const ApiPlatform\Core\Api\UrlGeneratorInterface::ABS_URL
         stateless: true
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
