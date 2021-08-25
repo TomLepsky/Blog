@@ -9,17 +9,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class GameOutput
 {
     /**
-     * @Groups({"gameItem:read", "gameCollection:read"})
+     * @Groups({"gameItem:read", "gameCollection:read", "articleItem:read", "articleCollection:read"})
      */
     public int $id;
 
     /**
-     * @Groups({"gameItem:read", "gameCollection:read"})
+     * @Groups({"gameItem:read", "gameCollection:read", "articleItem:read", "articleCollection:read"})
      */
     public string $name;
 
     /**
-     * @Groups({"gameItem:read", "gameCollection:read"})
+     * @Groups({"gameItem:read", "gameCollection:read", "articleItem:read", "articleCollection:read"})
      */
     public string $slug;
 

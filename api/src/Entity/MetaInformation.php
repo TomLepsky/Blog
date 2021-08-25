@@ -9,7 +9,7 @@ class MetaInformation
 {
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"gameItem:read", "game:write", "articleItem:read", "article:write", "tagItem:read", "tagCollection:read"})
+     * @Groups({"gameItem:read", "game:write", "articleItem:read", "article:write", "tagItem:read", "tag:write"})
      */
     protected ?string $title;
 

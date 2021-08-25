@@ -26,10 +26,10 @@ class ArticleOutputDataTransformer implements DataTransformerInterface
         $articleOutput->previewImage = $object->getDetailImage();
         $articleOutput->detailImage = $object->getDetailImage();
         $articleOutput->tags = $object->getTags();
-        $articleOutput->children = $object->getChildren();
+        $articleOutput->relative = $object->getChildren();
         $articleOutput->game = $object->getGame();
         $articleOutput->timeToRead = $object->getTimeToRead();
-
+        
         $meta = new MetaInformation();
         $meta->setTitle($object->getTitle());
         $meta->setDescription($object->getDescription());

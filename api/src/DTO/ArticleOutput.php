@@ -49,7 +49,7 @@ class ArticleOutput
     /**
      * @Groups({"articleItem:read", "articleCollection:read"})
      */
-    public ?Collection $children;
+    public ?Collection $relative;
 
     /**
      * @Groups({"articleItem:read", "articleCollection:read"})
@@ -71,5 +71,8 @@ class ArticleOutput
      */
     public ?DateTimeInterface $updatedAt;
 
+    /**
+     * @Groups({"articleItem:read", "articleCollection:read"})
+     */
     public ?MetaInformation $meta;
 }

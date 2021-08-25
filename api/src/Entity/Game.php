@@ -63,7 +63,7 @@ class Game extends MetaInformation
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"gameItem:read", "gameCollection:read", "game:write"})
+     * @Groups({"gameItem:read", "gameCollection:read", "game:write", "articleItem:read", "articleCollection:read"})
      * @Assert\NotBlank()
      */
     private string $name;

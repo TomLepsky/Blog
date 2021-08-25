@@ -33,6 +33,7 @@ use JetBrains\PhpStorm\Pure;
                 'groups' => ['articleCollection:read'],
                 'skip_null_values' => true
             ],
+            'output' => ArticleOutput::class,
         ],
         'post' => [
 //            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
@@ -44,6 +45,7 @@ use JetBrains\PhpStorm\Pure;
                 'groups' => ['articleItem:read'],
                 'skip_null_values' => true
             ],
+            'output' => ArticleOutput::class,
         ],
         'put' => [
 //            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
@@ -55,7 +57,6 @@ use JetBrains\PhpStorm\Pure;
     denormalizationContext: [
         'groups' => ['article:write']
     ],
-    output: ArticleOutput::class
 )]
 class Article extends MetaInformation
 {
@@ -131,13 +132,13 @@ class Article extends MetaInformation
     private ?Collection $children;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Game::class, inversedBy="popularArticles")
+     * @ORM\ManyToOne(targetEntity=Game::class, inversedBy="articles")
      * @Groups({"articleItem:read", "articleCollection:read"})
      */
     private ?Game $game;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Game::class, inversedBy="articles")
+     * @ORM\ManyToOne(targetEntity=Game::class, inversedBy="popularArticles")
      */
     private ?Game $popularGame;
 
