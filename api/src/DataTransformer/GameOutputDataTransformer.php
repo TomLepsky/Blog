@@ -7,9 +7,12 @@ use App\DTO\GameOutput;
 use App\DTO\MediaObjectOutput;
 use App\Entity\Game;
 use App\Entity\MetaInformation;
+use App\Repository\ArticleRepository;
 
 class GameOutputDataTransformer implements DataTransformerInterface
 {
+    public function __construct(private ArticleRepository $articleRepository){}
+
     /**
      * @param Game $object
      * @param string $to
@@ -22,7 +25,7 @@ class GameOutputDataTransformer implements DataTransformerInterface
         $gameOutput->id = $object->getId();
         $gameOutput->name = $object->getName();
         $gameOutput->slug = $object->getSlug();
-        $gameOutput->articlesCount = $object->getArticlesCount();
+        $gameOutput->articlesCount = $this->articleRepository->getQuantity($object->getId());
         $gameOutput->image = $object->getImage();
 
         $meta = new MetaInformation();

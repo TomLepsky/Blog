@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=GameRepository::class)
  * @ORM\Table(name="game",indexes={
- *     @ORM\Index(name="slug_index", columns={"slug"})
+ *     @ORM\Index(name="game_slug_index", columns={"slug"})
  * })
  * @UniqueEntity("slug")
  */
@@ -25,7 +25,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         'get' => [
             "normalization_context" => [
                 "groups" => ["gameCollection:read"],
-                "skip_null_values" => true
             ],
         ],
         'post' => [
@@ -36,7 +35,6 @@ use Symfony\Component\Validator\Constraints as Assert;
         'get' => [
             "normalization_context" => [
                 "groups" => ["gameItem:read"],
-//                "skip_null_values" => true
             ],
         ],
         'put' => [
@@ -49,6 +47,9 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: [
         'groups' => ['game:write']
     ],
+    normalizationContext: [
+        'skip_null_values' => true
+    ],
     output: GameOutput::class
 )]
 class Game extends MetaInformation
@@ -57,7 +58,7 @@ class Game extends MetaInformation
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"gameItem:read", "gameCollection:read"})
+     * @Groups({"gameItem:read", "gameCollection:read", "articleItem:read", "articleCollection:read"})
      */
     private int $id;
 
@@ -70,7 +71,7 @@ class Game extends MetaInformation
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"gameItem:read", "gameCollection:read", "game:write"})
+     * @Groups({"gameItem:read", "gameCollection:read", "game:write", "articleItem:read", "articleCollection:read"})
      * @Assert\NotBlank()
      * @Assert\Regex("/[\w\d-]+/")
      */
@@ -96,7 +97,6 @@ class Game extends MetaInformation
 
     /**
      * @ORM\OneToMany(targetEntity=Article::class, mappedBy="game")
-     * @Groups({"game:write"})
      */
     private ?Collection $articles;
 
@@ -121,6 +121,7 @@ class Game extends MetaInformation
     public function __construct()
     {
         $this->popularArticles = new ArrayCollection();
+        $this->articles = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->tools = new ArrayCollection();
     }

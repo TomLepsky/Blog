@@ -9,31 +9,31 @@ class MetaInformation
 {
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"gameItem:read", "game:write"})
+     * @Groups({"gameItem:read", "game:write", "articleItem:read", "article:write", "tagItem:read", "tagCollection:read"})
      */
     protected ?string $title;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"gameItem:read", "game:write"})
+     * @Groups({"gameItem:read", "game:write", "articleItem:read", "article:write", "tagItem:read", "tag:write"})
      */
     protected ?string $description;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"gameItem:read", "game:write"})
+     * @Groups({"gameItem:read", "game:write", "articleItem:read", "article:write", "tagItem:read", "tag:write"})
      */
     protected ?string $ogTitle;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"gameItem:read", "game:write"})
+     * @Groups({"gameItem:read", "game:write", "articleItem:read", "article:write", "tagItem:read", "tag:write"})
      */
     protected ?string $ogDescription;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"gameItem:read", "game:write"})
+     * @Groups({"gameItem:read", "game:write", "articleItem:read", "article:write", "tagItem:read", "tag:write"})
      */
     protected ?string $keyWords;
 
