@@ -25,6 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'get' => [
             "normalization_context" => [
                 "groups" => ["gameCollection:read"],
+                'skip_null_values' => true
             ],
         ],
         'post' => [
@@ -35,6 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'get' => [
             "normalization_context" => [
                 "groups" => ["gameItem:read"],
+                'skip_null_values' => true
             ],
         ],
         'put' => [
@@ -46,9 +48,6 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     denormalizationContext: [
         'groups' => ['game:write']
-    ],
-    normalizationContext: [
-        'skip_null_values' => true
     ],
     output: GameOutput::class
 )]

@@ -31,6 +31,7 @@ use JetBrains\PhpStorm\Pure;
         'get' => [
             'normalization_context' => [
                 'groups' => ['articleCollection:read'],
+                'skip_null_values' => true
             ],
         ],
         'post' => [
@@ -41,6 +42,7 @@ use JetBrains\PhpStorm\Pure;
         'get' => [
             'normalization_context' => [
                 'groups' => ['articleItem:read'],
+                'skip_null_values' => true
             ],
         ],
         'put' => [
@@ -52,9 +54,6 @@ use JetBrains\PhpStorm\Pure;
     ],
     denormalizationContext: [
         'groups' => ['article:write']
-    ],
-    normalizationContext: [
-        'skip_null_values' => true
     ],
     output: ArticleOutput::class
 )]

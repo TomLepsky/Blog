@@ -24,6 +24,7 @@ use App\Security\Voter\VoterAttribute;
         'get' => [
             'normalization_context' => [
                 'groups' => ['tagCollection:read'],
+                'skip_null_values' => true
             ],
         ],
         'post' => [
@@ -34,6 +35,7 @@ use App\Security\Voter\VoterAttribute;
         'get' => [
             'normalization_context' => [
                 'groups' => ['tagItem:read'],
+                'skip_null_values' => true
             ],
         ],
         'put' => [
@@ -46,9 +48,6 @@ use App\Security\Voter\VoterAttribute;
     denormalizationContext: [
         'groups' => ['tag:write']
     ],
-    normalizationContext: [
-    'skip_null_values' => true
-],
 )]
 class Tag extends MetaInformation
 {
