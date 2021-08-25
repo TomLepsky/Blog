@@ -1,5 +1,5 @@
 api_platform:
-    absolute_url: https://blog.feature.zone/api
+#    absolute_url: https://blog.feature.zone/api
     allow_plain_identifiers: true
     title: Wowvendor blog API Platform
     version: 1.0.0
