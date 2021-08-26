@@ -47,7 +47,7 @@ class ArticleOutput
     public ?MediaObject $detailImage;
 
     /**
-     * @Groups({"articleItem:read", "articleCollection:read"})
+     * @Groups({"articleItem:read"})
      */
     public ?Collection $relative;
 
@@ -72,7 +72,7 @@ class ArticleOutput
     public ?DateTimeInterface $updatedAt;
 
     /**
-     * @Groups({"articleItem:read", "articleCollection:read"})
+     * @Groups({"articleItem:read"})
      */
     public ?MetaInformation $meta;
 }
