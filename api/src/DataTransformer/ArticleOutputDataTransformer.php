@@ -5,7 +5,7 @@ namespace App\DataTransformer;
 use ApiPlatform\Core\DataTransformer\DataTransformerInterface;
 use App\DTO\ArticleOutput;
 use App\Entity\Article;
-use App\Entity\MetaInformation;
+use App\Embeddable\MetaInformation;
 
 class ArticleOutputDataTransformer implements DataTransformerInterface
 {
@@ -29,7 +29,7 @@ class ArticleOutputDataTransformer implements DataTransformerInterface
         $articleOutput->relative = $object->getChildren();
         $articleOutput->game = $object->getGame();
         $articleOutput->timeToRead = $object->getTimeToRead();
-        
+
         $meta = new MetaInformation();
         $meta->setTitle($object->getTitle());
         $meta->setDescription($object->getDescription());

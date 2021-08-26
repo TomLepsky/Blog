@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\DTO\ArticleOutput;
+use App\Embeddable\MetaInformation;
 use App\Repository\ArticleRepository;
 use App\Security\Voter\VoterAttribute;
 use DateTime;
@@ -58,7 +59,7 @@ use JetBrains\PhpStorm\Pure;
         'groups' => ['article:write']
     ],
 )]
-class Article extends MetaInformation
+class Article
 {
     /**
      * @ORM\Id
@@ -77,7 +78,7 @@ class Article extends MetaInformation
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"articleItem:read", "articleCollection:read", "article:write"})
+     * @Groups({"articleItem:read", "article:write"})
      * @Assert\NotBlank()
      */
     private string $content;
@@ -89,6 +90,36 @@ class Article extends MetaInformation
      * @Assert\Regex("/[\w\d-]+/")
      */
     private string $slug;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"articleItem:read", "article:write"})
+     */
+    private ?string $title;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"articleItem:read", "article:write"})
+     */
+    private ?string $description;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"articleItem:read", "article:write"})
+     */
+    private ?string $ogTitle;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"articleItem:read", "article:write"})
+     */
+    private ?string $ogDescription;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"articleItem:read", "article:write"})
+     */
+    private ?string $keyWords;
 
     /**
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="articles")
@@ -375,5 +406,55 @@ class Article extends MetaInformation
     public function setTimeToRead(int $timeToRead): void
     {
         $this->timeToRead = $timeToRead;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?string $title): void
+    {
+        $this->title = $title;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getOgTitle(): ?string
+    {
+        return $this->ogTitle;
+    }
+
+    public function setOgTitle(?string $ogTitle): void
+    {
+        $this->ogTitle = $ogTitle;
+    }
+
+    public function getOgDescription(): ?string
+    {
+        return $this->ogDescription;
+    }
+
+    public function setOgDescription(?string $ogDescription): void
+    {
+        $this->ogDescription = $ogDescription;
+    }
+
+    public function getKeyWords(): ?string
+    {
+        return $this->keyWords;
+    }
+
+    public function setKeyWords(?string $keyWords): void
+    {
+        $this->keyWords = $keyWords;
     }
 }

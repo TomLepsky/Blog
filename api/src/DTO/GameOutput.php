@@ -3,7 +3,7 @@
 namespace App\DTO;
 
 use App\Entity\MediaObject;
-use App\Entity\MetaInformation;
+use App\Embeddable\MetaInformation;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 class GameOutput

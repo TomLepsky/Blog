@@ -1,10 +1,13 @@
 <?php
 
-namespace App\Entity;
+namespace App\Embeddable;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * @ORM\Embeddable
+ */
 class MetaInformation
 {
     /**

@@ -4,7 +4,7 @@ namespace App\DTO;
 
 use App\Entity\Game;
 use App\Entity\MediaObject;
-use App\Entity\MetaInformation;
+use App\Embeddable\MetaInformation;
 use DateTimeInterface;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -22,9 +22,9 @@ class ArticleOutput
     public string $header;
 
     /**
-     * @Groups({"articleItem:read", "articleCollection:read"})
+     * @Groups({"articleItem:read"})
      */
-    public string $content;
+    public ?string $content;
 
     /**
      * @Groups({"articleItem:read", "articleCollection:read"})

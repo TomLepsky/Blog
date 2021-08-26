@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\DTO\TagOutput;
+use App\Embeddable\MetaInformation;
 use App\Repository\TagRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -26,6 +28,7 @@ use App\Security\Voter\VoterAttribute;
                 'groups' => ['tagCollection:read'],
                 'skip_null_values' => true
             ],
+            'output' => TagOutput::class
         ],
         'post' => [
 //            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
@@ -37,6 +40,7 @@ use App\Security\Voter\VoterAttribute;
                 'groups' => ['tagItem:read'],
                 'skip_null_values' => true
             ],
+            'output' => TagOutput::class
         ],
         'put' => [
 //            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
@@ -49,7 +53,7 @@ use App\Security\Voter\VoterAttribute;
         'groups' => ['tag:write']
     ],
 )]
-class Tag extends MetaInformation
+class Tag
 {
     /**
      * @ORM\Id
@@ -73,6 +77,36 @@ class Tag extends MetaInformation
      * @Assert\Regex("/[\w\d-]+/")
      */
     private string $slug;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"tagItem:read", "tag:write"})
+     */
+    private ?string $title;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"tagItem:read", "tag:write"})
+     */
+    private ?string $description;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"tagItem:read", "tag:write"})
+     */
+    private ?string $ogTitle;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"tagItem:read", "tag:write"})
+     */
+    private ?string $ogDescription;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"tagItem:read", "tag:write"})
+     */
+    private ?string $keyWords;
 
     /**
      * @ORM\ManyToMany(targetEntity=Article::class, mappedBy="tags")
@@ -151,5 +185,55 @@ class Tag extends MetaInformation
     public function setSlug(string $slug): void
     {
         $this->slug = $slug;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?string $title): void
+    {
+        $this->title = $title;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getOgTitle(): ?string
+    {
+        return $this->ogTitle;
+    }
+
+    public function setOgTitle(?string $ogTitle): void
+    {
+        $this->ogTitle = $ogTitle;
+    }
+
+    public function getOgDescription(): ?string
+    {
+        return $this->ogDescription;
+    }
+
+    public function setOgDescription(?string $ogDescription): void
+    {
+        $this->ogDescription = $ogDescription;
+    }
+
+    public function getKeyWords(): ?string
+    {
+        return $this->keyWords;
+    }
+
+    public function setKeyWords(?string $keyWords): void
+    {
+        $this->keyWords = $keyWords;
     }
 }

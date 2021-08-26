@@ -4,9 +4,8 @@ namespace App\DataTransformer;
 
 use ApiPlatform\Core\DataTransformer\DataTransformerInterface;
 use App\DTO\GameOutput;
-use App\DTO\MediaObjectOutput;
 use App\Entity\Game;
-use App\Entity\MetaInformation;
+use App\Embeddable\MetaInformation;
 use App\Repository\ArticleRepository;
 
 class GameOutputDataTransformer implements DataTransformerInterface
@@ -27,7 +26,7 @@ class GameOutputDataTransformer implements DataTransformerInterface
         $gameOutput->slug = $object->getSlug();
         $gameOutput->articlesCount = $this->articleRepository->getQuantity($object->getId());
         $gameOutput->image = $object->getImage();
-
+print_r("Game transformer");exit();
         $meta = new MetaInformation();
         $meta->setTitle($object->getTitle());
         $meta->setDescription($object->getDescription());

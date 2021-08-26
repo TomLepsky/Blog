@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\DTO\GameOutput;
+use App\Embeddable\MetaInformation;
 use App\Repository\GameRepository;
 use App\Security\Voter\VoterAttribute;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,17 +28,27 @@ use Symfony\Component\Validator\Constraints as Assert;
                 "groups" => ["gameCollection:read"],
                 'skip_null_values' => true
             ],
+            'output' => GameOutput::class
         ],
         'post' => [
 //            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
         ]
     ],
     itemOperations: [
+        'get-admin' => [
+            'method' => 'get',
+            'path' => '/game-admin/{id}',
+            "normalization_context" => [
+                "groups" => ["gameItem:read"],
+                'skip_null_values' => true
+            ],
+        ],
         'get' => [
             "normalization_context" => [
                 "groups" => ["gameItem:read"],
                 'skip_null_values' => true
             ],
+            'output' => GameOutput::class
         ],
         'put' => [
 //            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
@@ -49,28 +60,27 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: [
         'groups' => ['game:write']
     ],
-    output: GameOutput::class
 )]
-class Game extends MetaInformation
+class Game
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"gameItem:read", "gameCollection:read", "articleItem:read", "articleCollection:read"})
+     * @Groups({"gameItem:read", "gameCollection:read", "articleItem:read", "articleCollection:read", "tagItem:read", "tagCollection:read"})
      */
     private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"gameItem:read", "gameCollection:read", "game:write", "articleItem:read", "articleCollection:read"})
+     * @Groups({"gameItem:read", "gameCollection:read", "game:write", "articleItem:read", "articleCollection:read", "tagItem:read", "tagCollection:read"})
      * @Assert\NotBlank()
      */
     private string $name;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"gameItem:read", "gameCollection:read", "game:write", "articleItem:read", "articleCollection:read"})
+     * @Groups({"gameItem:read", "gameCollection:read", "game:write", "articleItem:read", "articleCollection:read", "tagItem:read", "tagCollection:read"})
      * @Assert\NotBlank()
      * @Assert\Regex("/[\w\d-]+/")
      */
@@ -85,7 +95,37 @@ class Game extends MetaInformation
     /**
      * @Groups({"gameItem:read", "gameCollection:read"})
      */
-    private int $articlesCount;
+    private int $articlesCount = 0;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"gameItem:read", "game:write"})
+     */
+    private ?string $title;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"gameItem:read", "game:write"})
+     */
+    private ?string $description;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"gameItem:read", "game:write"})
+     */
+    private ?string $ogTitle;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"gameItem:read", "game:write"})
+     */
+    private ?string $ogDescription;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"gameItem:read", "game:write"})
+     */
+    private ?string $keyWords;
 
     /**
      * @ORM\OneToOne(targetEntity=MediaObject::class)
@@ -282,5 +322,55 @@ class Game extends MetaInformation
     public function setArticlesCount(int $articlesCount): void
     {
         $this->articlesCount = $articlesCount;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?string $title): void
+    {
+        $this->title = $title;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function getOgTitle(): ?string
+    {
+        return $this->ogTitle;
+    }
+
+    public function setOgTitle(?string $ogTitle): void
+    {
+        $this->ogTitle = $ogTitle;
+    }
+
+    public function getOgDescription(): ?string
+    {
+        return $this->ogDescription;
+    }
+
+    public function setOgDescription(?string $ogDescription): void
+    {
+        $this->ogDescription = $ogDescription;
+    }
+
+    public function getKeyWords(): ?string
+    {
+        return $this->keyWords;
+    }
+
+    public function setKeyWords(?string $keyWords): void
+    {
+        $this->keyWords = $keyWords;
     }
 }
