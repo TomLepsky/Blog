@@ -26,7 +26,7 @@ class GameOutputDataTransformer implements DataTransformerInterface
         $gameOutput->slug = $object->getSlug();
         $gameOutput->articlesCount = $this->articleRepository->getQuantity($object->getId());
         $gameOutput->image = $object->getImage();
-        
+
         $meta = new MetaInformation();
         $meta->setTitle($object->getTitle());
         $meta->setDescription($object->getDescription());

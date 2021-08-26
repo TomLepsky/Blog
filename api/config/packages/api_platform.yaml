@@ -25,6 +25,7 @@ api_platform:
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
     collection:
+        exists_parameter_name: 'exists'
         pagination:
             page_parameter_name: 'page'
             items_per_page_parameter_name: 'pageSize'

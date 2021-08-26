@@ -2,8 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\DTO\ArticleOutput;
 use App\Embeddable\MetaInformation;
 use App\Repository\ArticleRepository;
@@ -59,6 +62,8 @@ use JetBrains\PhpStorm\Pure;
         'groups' => ['article:write']
     ],
 )]
+#[ApiFilter(SearchFilter::class, properties: ['game.slug' => 'exact', 'tags.slug' => 'exact'])]
+#[ApiFilter(ExistsFilter::class, properties: ['popular'])]
 class Article
 {
     /**
@@ -87,7 +92,10 @@ class Article
      * @ORM\Column(type="string", length=255)
      * @Groups({"articleItem:read", "articleCollection:read", "article:write"})
      * @Assert\NotBlank()
-     * @Assert\Regex("/[\w\d-]+/")
+     * @Assert\Regex(
+     *     pattern="/[^\w-]+/",
+     *     match=false,
+     *     message="Slug should contain only letters, digits or symbols: -_")
      */
     private string $slug;
 
@@ -171,7 +179,7 @@ class Article
     /**
      * @ORM\ManyToOne(targetEntity=Game::class, inversedBy="popularArticles")
      */
-    private ?Game $popularGame;
+    private ?Game $popular;
 
     /**
      * @ORM\Column(type="integer", nullable=true)

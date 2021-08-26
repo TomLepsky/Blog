@@ -82,7 +82,10 @@ class Game
      * @ORM\Column(type="string", length=255)
      * @Groups({"gameItem:read", "gameCollection:read", "game:write", "articleItem:read", "articleCollection:read", "tagItem:read", "tagCollection:read"})
      * @Assert\NotBlank()
-     * @Assert\Regex("/[\w\d-]+/")
+     * @Assert\Regex(
+     *     pattern="/[^\w-]+/",
+     *     match=false,
+     *     message="Slug should contain only letters, digits or symbols: -_")
      */
     private string $slug;
 
@@ -140,7 +143,7 @@ class Game
     private ?Collection $articles;
 
     /**
-     * @ORM\OneToMany(targetEntity=Article::class, mappedBy="popularGame")
+     * @ORM\OneToMany(targetEntity=Article::class, mappedBy="popular")
      * @Groups({"game:write"})
      */
     private ?Collection $popularArticles;

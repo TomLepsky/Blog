@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\DTO\TagOutput;
 use App\Embeddable\MetaInformation;
 use App\Repository\TagRepository;
@@ -53,6 +55,7 @@ use App\Security\Voter\VoterAttribute;
         'groups' => ['tag:write']
     ],
 )]
+#[ApiFilter(SearchFilter::class, properties: ['game.slug' => 'exact'])]
 class Tag
 {
     /**
@@ -74,7 +77,10 @@ class Tag
      * @ORM\Column(type="string", length=255)
      * @Groups({"tagItem:read", "tagCollection:read", "articleItem:read", "articleCollection:read", "tag:write"})
      * @Assert\NotBlank()
-     * @Assert\Regex("/[\w\d-]+/")
+     * @Assert\Regex(
+     *     pattern="/[^\w-]+/",
+     *     match=false,
+     *     message="Slug should contain only letters, digits or symbols: -_")
      */
     private string $slug;
 

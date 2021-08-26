@@ -32,7 +32,7 @@ class ArticleOutput
     public string $slug;
 
     /**
-     * @Groups({"articleItem:read", "articleCollection:read"})
+     * @Groups({"articleItem:read"})
      */
     public ?Collection $tags;
 
