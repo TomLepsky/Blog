@@ -31,4 +31,15 @@ class ArticleRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * @return Article[]
+     */
+    public function getPopularArticles() : array
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.popular IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+    }
 }

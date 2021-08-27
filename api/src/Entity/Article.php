@@ -7,6 +7,7 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Controller\getPopularArticles;
 use App\DTO\ArticleOutput;
 use App\Embeddable\MetaInformation;
 use App\Repository\ArticleRepository;
@@ -33,6 +34,16 @@ use JetBrains\PhpStorm\Pure;
 #[ApiResource(
     collectionOperations: [
         'get' => [
+            'normalization_context' => [
+                'groups' => ['articleCollection:read'],
+                'skip_null_values' => true
+            ],
+            'output' => ArticleOutput::class,
+        ],
+        'popular_articles' => [
+            'method' => 'get',
+            'path' => '/articles/popular',
+            'controller' => getPopularArticles::class,
             'normalization_context' => [
                 'groups' => ['articleCollection:read'],
                 'skip_null_values' => true
