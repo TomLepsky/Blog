@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiProperty;
 use App\DTO\GameOutput;
 use App\Embeddable\MetaInformation;
 use App\Repository\GameRepository;
@@ -35,20 +36,20 @@ use Symfony\Component\Validator\Constraints as Assert;
         ]
     ],
     itemOperations: [
-        'get-admin' => [
-            'method' => 'get',
-            'path' => '/game-admin/{id}',
-            "normalization_context" => [
-                "groups" => ["gameItem:read"],
-                'skip_null_values' => true
-            ],
-        ],
         'get' => [
             "normalization_context" => [
                 "groups" => ["gameItem:read"],
                 'skip_null_values' => true
             ],
             'output' => GameOutput::class
+        ],
+        'get_admin' => [
+            'method' => 'get',
+            'path' => '/game-admin/{id}',
+            "normalization_context" => [
+                "groups" => ["gameItem:read"],
+                'skip_null_values' => true
+            ],
         ],
         'put' => [
 //            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
@@ -68,6 +69,7 @@ class Game
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({"gameItem:read", "gameCollection:read", "articleItem:read", "articleCollection:read", "tagItem:read", "tagCollection:read"})
+     * @ApiProperty(identifier=false)
      */
     private int $id;
 
@@ -85,7 +87,9 @@ class Game
      * @Assert\Regex(
      *     pattern="/[^\w-]+/",
      *     match=false,
-     *     message="Slug should contain only letters, digits or symbols: -_")
+     *     message="Slug should contain only letters, digits or symbols: -_"
+     * )
+     * @ApiProperty(identifier=true)
      */
     private string $slug;
 

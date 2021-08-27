@@ -83,6 +83,7 @@ class Article
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({"articleItem:read", "articleCollection:read", "game:read"})
+     * @ApiProperty(identifier=false)
      */
     private int $id;
 
@@ -107,7 +108,9 @@ class Article
      * @Assert\Regex(
      *     pattern="/[^\w-]+/",
      *     match=false,
-     *     message="Slug should contain only letters, digits or symbols: -_")
+     *     message="Slug should contain only letters, digits or symbols: -_"
+     * )
+     * @ApiProperty(iri="https://schema.org/identifier", identifier=true)
      */
     private string $slug;
 
@@ -352,14 +355,14 @@ class Article
         return $this;
     }
 
-    public function getPopularGame(): ?Game
+    public function getPopular(): ?Game
     {
-        return $this->popularGame;
+        return $this->popular;
     }
 
-    public function setPopularGame(?Game $popularGame): self
+    public function setPopular(?Game $popular): self
     {
-        $this->popularGame = $popularGame;
+        $this->popular = $popular;
 
         return $this;
     }

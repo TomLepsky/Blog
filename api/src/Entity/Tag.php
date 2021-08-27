@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\DTO\TagOutput;
 use App\Embeddable\MetaInformation;
@@ -63,6 +64,7 @@ class Tag
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      * @Groups({"tagItem:read", "tagCollection:read", "articleItem:read", "articleCollection:read"})
+     * @ApiProperty(identifier=false)
      */
     private int $id;
 
@@ -80,7 +82,9 @@ class Tag
      * @Assert\Regex(
      *     pattern="/[^\w-]+/",
      *     match=false,
-     *     message="Slug should contain only letters, digits or symbols: -_")
+     *     message="Slug should contain only letters, digits or symbols: -_"
+     * )
+     * @ApiProperty(identifier=true)
      */
     private string $slug;
 
