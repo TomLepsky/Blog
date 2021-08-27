@@ -38,6 +38,7 @@ use JetBrains\PhpStorm\Pure;
                 'groups' => ['articleCollection:read'],
                 'skip_null_values' => true
             ],
+            'order' => ['createdAt' => 'DESC'],
             'output' => ArticleOutput::class,
         ],
         'popular_articles' => [

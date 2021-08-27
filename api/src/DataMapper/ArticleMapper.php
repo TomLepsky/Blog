@@ -21,10 +21,12 @@ class ArticleMapper
             $mappedArticles[$article->getGame()->getSlug()][] = $article;
         }
 
+        $mergedArticles = [];
         foreach ($mappedArticles as &$articles) {
             $articles = array_slice($articles, 0, self::MAX_POPULAR_ARTICLES);
+            $mergedArticles = array_merge($mergedArticles, $articles);
         }
 
-        return $mappedArticles;
+        return $mergedArticles;
     }
 }
