@@ -43,6 +43,7 @@ final class Version20210831104126 extends AbstractMigration
                     CALL calculation_articles_quantity_per_tag(NEW.tag_id);
                 END;
         ");
+
         $this->addSql("DROP TRIGGER IF EXISTS calculation_article_after_delete;");
 
         $this->addSql("
@@ -69,5 +70,9 @@ final class Version20210831104126 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
+        $this->addSql("DROP PROCEDURE IF EXISTS calculation_articles_quantity_per_tag;");
+        $this->addSql("DROP TRIGGER IF EXISTS calculation_article_after_insert;");
+        $this->addSql("DROP TRIGGER IF EXISTS calculation_article_after_delete;");
+        $this->addSql("DROP TRIGGER IF EXISTS calculation_article_after_update;");
     }
 }
