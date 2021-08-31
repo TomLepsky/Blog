@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\ArticleController;
 
 use App\DataMapper\ArticleMapper;
 use App\Entity\Article;
@@ -15,10 +15,8 @@ class getPopularArticles extends AbstractController
 
     public function __invoke($data) : array
     {
-        /**
-         * @var ArticleRepository $articleRepository
-         */
-        $articleRepository = $this->getDoctrine()->getRepository(Article::class);
-        return $this->articleMapper->mapPopular($articleRepository->getPopularArticles());
+        /**  @var ArticleRepository $repository */
+        $repository = $this->getDoctrine()->getRepository(Article::class);
+        return $this->articleMapper->mapPopular($repository->getPopularArticles());
     }
 }

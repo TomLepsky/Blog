@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\Article;
 
 use App\Entity\Game;
 use App\Entity\MediaObject;
@@ -9,15 +9,15 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-class ArticleOutput
+class ArticleItemOutput
 {
     /**
-     * @Groups({"articleItem:read", "articleCollection:read"})
+     * @Groups({"articleItem:read"})
      */
     public int $id;
 
     /**
-     * @Groups({"articleItem:read", "articleCollection:read"})
+     * @Groups({"articleItem:read"})
      */
     public string $header;
 
@@ -27,7 +27,7 @@ class ArticleOutput
     public ?string $content;
 
     /**
-     * @Groups({"articleItem:read", "articleCollection:read"})
+     * @Groups({"articleItem:read"})
      */
     public string $slug;
 
@@ -37,12 +37,12 @@ class ArticleOutput
     public ?Collection $tags;
 
     /**
-     * @Groups({"articleItem:read", "articleCollection:read"})
+     * @Groups({"articleItem:read"})
      */
     public ?MediaObject $previewImage;
 
     /**
-     * @Groups({"articleItem:read", "articleCollection:read"})
+     * @Groups({"articleItem:read"})
      */
     public ?MediaObject $detailImage;
 
@@ -52,27 +52,42 @@ class ArticleOutput
     public ?Collection $relative;
 
     /**
-     * @Groups({"articleItem:read", "articleCollection:read"})
+     * @Groups({"articleItem:read"})
      */
     public ?Game $game;
 
     /**
-     * @Groups({"articleItem:read", "articleCollection:read"})
+     * @Groups({"articleItem:read"})
      */
     public int $timeToRead;
 
     /**
-     * @Groups({"articleItem:read", "articleCollection:read"})
+     * @Groups({"articleItem:read"})
      */
     public ?DateTimeInterface $createdAt;
 
     /**
-     * @Groups({"articleItem:read", "articleCollection:read"})
+     * @Groups({"articleItem:read"})
+     */
+    public ?string $mappedCreatedAt;
+
+    /**
+     * @Groups({"articleItem:read"})
      */
     public ?DateTimeInterface $updatedAt;
 
     /**
      * @Groups({"articleItem:read"})
      */
-    public ?MetaInformation $meta;
+    public ?MetaInformation $meta = null;
+
+    /**
+     * @Groups({"articleItem:read"})
+     */
+    public ?ArticleBoundOutput $previousArticle = null;
+
+    /**
+     * @Groups({"articleItem:read"})
+     */
+    public ?ArticleBoundOutput $nextArticle = null;
 }

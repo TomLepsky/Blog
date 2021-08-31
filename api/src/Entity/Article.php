@@ -7,8 +7,9 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use App\Controller\getPopularArticles;
-use App\DTO\ArticleOutput;
+use App\Controller\ArticleController\getPopularArticles;
+use App\Controller\ArticleController\getPreviousArticle;
+use App\DTO\Article\ArticleItemOutput;
 use App\Embeddable\MetaInformation;
 use App\Repository\ArticleRepository;
 use App\Security\Voter\VoterAttribute;
@@ -39,7 +40,6 @@ use JetBrains\PhpStorm\Pure;
                 'skip_null_values' => true
             ],
             'order' => ['createdAt' => 'DESC'],
-            'output' => ArticleOutput::class,
         ],
         'popular_articles' => [
             'method' => 'get',
@@ -49,7 +49,6 @@ use JetBrains\PhpStorm\Pure;
                 'groups' => ['articleCollection:read'],
                 'skip_null_values' => true
             ],
-            'output' => ArticleOutput::class,
         ],
         'post' => [
 //            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
@@ -61,7 +60,7 @@ use JetBrains\PhpStorm\Pure;
                 'groups' => ['articleItem:read'],
                 'skip_null_values' => true
             ],
-            'output' => ArticleOutput::class,
+            'output' => ArticleItemOutput::class,
         ],
         'put' => [
 //            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
@@ -99,7 +98,7 @@ class Article
      * @Groups({"articleItem:read", "article:write"})
      * @Assert\NotBlank()
      */
-    private string $content;
+    private ?string $content;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -146,7 +145,7 @@ class Article
 
     /**
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="articles")
-     * @Groups({"articleItem:read", "articleCollection:read", "article:write"})
+     * @Groups({"articleItem:read", "article:write"})
      */
     private ?Collection $tags;
 
@@ -262,12 +261,12 @@ class Article
         return $this;
     }
 
-    public function getContent(): string
+    public function getContent(): ?string
     {
         return $this->content;
     }
 
-    public function setContent(string $content): self
+    public function setContent(?string $content): self
     {
         $this->content = $content;
 

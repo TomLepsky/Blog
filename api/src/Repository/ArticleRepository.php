@@ -3,10 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Article;
-use App\Entity\ArticleTranslation;
-use App\Entity\Locale;
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +15,10 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ArticleRepository extends ServiceEntityRepository
 {
+    public const PREVIOUS = 1;
+
+    public const NEXT = 2;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Article::class);
@@ -41,5 +43,31 @@ class ArticleRepository extends ServiceEntityRepository
             ->where('a.popular IS NOT NULL')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param DateTimeInterface $date
+     * @param int $type
+     * @return ?Article
+     */
+    public function getBoundArticle(DateTimeInterface $date, int $type = self::PREVIOUS) : ?Article
+    {
+        $bird = '<';
+        $order = 'DESC';
+
+        if ($type === self::NEXT) {
+            $bird = '>';
+            $order = 'ASC';
+        }
+
+        $result = $this->createQueryBuilder('a')
+            ->where("a.createdAt {$bird} :date")
+            ->setParameter('date', $date)
+            ->orderBy('a.createdAt', $order)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult();
+
+        return !empty($result) ? $result[0] : null;
     }
 }

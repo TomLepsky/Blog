@@ -3,6 +3,7 @@
 namespace DoctrineMigrations;
 
 use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -17,9 +18,10 @@ class Version21210101010101 extends AbstractMigration
     {
         $gamesCount = 4;
         $tagsCount = 10;
-        $articlesCount = 30;
+        $articlesCount = 40;
         $gameTags = [];
         $articlesGame = [];
+        $date = new DateTime();
 
         for ($i = 1; $i <= $gamesCount; $i++) {
             $weight = rand(0, 200);
@@ -42,9 +44,9 @@ class Version21210101010101 extends AbstractMigration
         }
 
         for ($i = 1; $i <= $articlesCount; $i++) {
-            $date = new DateTime();
-            $updatedAt = $date->format('Y-m-d H:i:s');
-            $createdAt = $date->format('Y-m-d H:i:s');
+            $updatedAt = $date->format(DateTimeInterface::W3C);
+            $createdAt = $date->format(DateTimeInterface::W3C);
+            $date = $date->modify("+1 min");
             $gameId = rand(1, $gamesCount);
             $articlesGame["{$i}"] = $gameId;
 
@@ -71,6 +73,10 @@ class Version21210101010101 extends AbstractMigration
                 (id, preview_image_id, detail_image_id, game_id, popular_id, header, content, slug, time_to_read, created_at, updated_at, title, description, og_title, og_description, key_words) VALUES
                 ({$i}, null, null, {$gameId}, null , 'header_{$i}', '{$content}', 'article_slug_{$i}', {$timeToRead}, '{$createdAt}', '{$updatedAt}', 'article_title_{$i}', 'article_description_{$i}', 'article_og_title_{$i}', 'article_og_description_{$i}', 'article_key_word_{$i}')"
             );
+
+            if (rand(1, 2) === 1) {
+                $this->addSql("UPDATE blogapi.article SET popular_id = {$gameId} WHERE id = {$i}");
+            }
         }
 
         for ($i = 1; $i <= $articlesCount; $i++) {
