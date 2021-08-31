@@ -38,8 +38,8 @@ class Version21210101010101 extends AbstractMigration
 
             $this->addSql(
                 "INSERT INTO blogapi.tag
-                (id, game_id, name, slug, title, description, og_title, og_description, key_words) VALUES
-                ({$i}, {$gameId}, 'tag_{$i}', 'tag_slug_{$i}', 'title_{$i}', 'description_{$i}', 'og_title_{$i}', 'og_description_{$i}', 'key_word_{$i}')"
+                (id, game_id, name, slug, articles_quantity,  title, description, og_title, og_description, key_words) VALUES
+                ({$i}, {$gameId}, 'tag_{$i}', 'tag_slug_{$i}', 0, 'title_{$i}', 'description_{$i}', 'og_title_{$i}', 'og_description_{$i}', 'key_word_{$i}')"
             );
         }
 

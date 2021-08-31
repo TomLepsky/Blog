@@ -31,7 +31,6 @@ use App\Security\Voter\VoterAttribute;
                 'groups' => ['tagCollection:read'],
                 'skip_null_values' => true
             ],
-            'output' => TagOutput::class
         ],
         'post' => [
 //            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
@@ -87,6 +86,12 @@ class Tag
      * @ApiProperty(identifier=true)
      */
     private string $slug;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"tagItem:read", "tagCollection:read"})
+     */
+    private ?int $articlesQuantity = 0;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -245,5 +250,15 @@ class Tag
     public function setKeyWords(?string $keyWords): void
     {
         $this->keyWords = $keyWords;
+    }
+
+    public function getArticlesQuantity(): ?int
+    {
+        return $this->articlesQuantity;
+    }
+
+    public function setArticlesQuantity(?int $articlesQuantity): void
+    {
+        $this->articlesQuantity = $articlesQuantity;
     }
 }

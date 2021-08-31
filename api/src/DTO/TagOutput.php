@@ -26,6 +26,11 @@ class TagOutput
     /**
      * @Groups({"tagItem:read", "tagCollection:read"})
      */
+    public ?int $articlesQuantity = 0;
+
+    /**
+     * @Groups({"tagItem:read", "tagCollection:read"})
+     */
     public ?Game $game;
 
     /**
