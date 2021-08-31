@@ -27,7 +27,7 @@ class ArticleItemOutputDataTransformer implements DataTransformerInterface
         $articleOutput->header = $object->getHeader();
         $articleOutput->content = $object->getContent();
         $articleOutput->slug = $object->getSlug();
-        $articleOutput->previewImage = $object->getDetailImage();
+        $articleOutput->previewImage = $object->getPreviewImage();
         $articleOutput->detailImage = $object->getDetailImage();
         $articleOutput->tags = $object->getTags();
         $articleOutput->relative = $object->getChildren();
