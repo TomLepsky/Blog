@@ -19,6 +19,18 @@ class ArticleRepository extends ServiceEntityRepository
 
     public const NEXT = 2;
 
+    public const TAGS_SLUG = 'tags_slug';
+
+    public const GAME_SLUG = 'game_slug';
+
+    public const HEADER = 'header';
+
+    public const VALID_QUERY_PARAMETERS = [
+        self::TAGS_SLUG,
+        self::GAME_SLUG,
+        self::HEADER
+    ];
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Article::class);
@@ -69,5 +81,68 @@ class ArticleRepository extends ServiceEntityRepository
             ->getResult();
 
         return !empty($result) ? $result[0] : null;
+    }
+
+    public function search(array $parameters = []) : array
+    {
+        $query = "
+            SELECT a FROM App\Entity\Article a
+                JOIN a.tags t
+                JOIN a.game g
+        ";
+
+        $bindParameters = [];
+        if (!empty($parameters)) {
+            $whereClause = [];
+
+
+            foreach ($parameters as $key => $value) {
+                switch ($key) {
+                    case self::TAGS_SLUG:
+                        if (!is_array($value)) {
+                            $value = [$value];
+                        }
+
+                        $nestedWhereClause = [];
+                        $count = count($value);
+
+                        for ($i = 0; $i < $count; $i++) {
+                            $bind = "tag_slug_{$i}";
+                            $nestedWhereClause[] = "t2.slug = :{$bind}";
+                            $bindParameters[$bind] = $value[$i];
+                        }
+
+                        $clause = implode(" OR ", $nestedWhereClause);
+                        $whereClause[self::TAGS_SLUG] = "
+                            a.id IN (SELECT a2.id FROM App\Entity\Article a2
+                                    JOIN a2.tags t2
+                                WHERE {$clause}
+                                GROUP BY a2.id
+                                HAVING count(a2.id) = {$count})
+                        ";
+                        break;
+
+                    case self::GAME_SLUG:
+                        $bind = "game_slug";
+                        $whereClause[self::GAME_SLUG] = "g.slug = :{$bind}";
+                        $bindParameters[$bind] = $value;
+                        break;
+
+                    case self::HEADER:
+                        if (strlen($value) < 4) {
+                            continue;
+                        }
+                        $bind = "header";
+                        $whereClause[self::HEADER] = "a.header LIKE :{$bind}";
+                        $bindParameters[$bind] = "%{$value}%";
+                        break;
+                }
+            }
+
+            $whereClause = implode(" AND ", $whereClause);
+            $query .= "WHERE {$whereClause}";
+        }
+
+        return $this->getEntityManager()->createQuery($query)->setParameters($bindParameters)->getResult();
     }
 }

@@ -2,15 +2,11 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use App\Controller\ArticleController\getPopularArticles;
-use App\Controller\ArticleController\getPreviousArticle;
+use App\Controller\ArticleController\GetPopularArticles;
+use App\Controller\ArticleController\SearchArticlesAction;
 use App\DTO\Article\ArticleItemOutput;
-use App\Embeddable\MetaInformation;
 use App\Repository\ArticleRepository;
 use App\Security\Voter\VoterAttribute;
 use DateTime;
@@ -22,7 +18,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
-use JetBrains\PhpStorm\Pure;
 
 /**
  * @ORM\Entity(repositoryClass=ArticleRepository::class)
@@ -44,11 +39,21 @@ use JetBrains\PhpStorm\Pure;
         'popular_articles' => [
             'method' => 'get',
             'path' => '/articles/popular',
-            'controller' => getPopularArticles::class,
+            'controller' => GetPopularArticles::class,
             'normalization_context' => [
                 'groups' => ['articleCollection:read'],
                 'skip_null_values' => true
             ],
+        ],
+        'search_articles' => [
+            'method' => 'get',
+            'path' => '/articles/search',
+            'controller' => SearchArticlesAction::class,
+            'normalization_context' => [
+                'groups' => ['articleCollection:read'],
+                'skip_null_values' => true
+            ],
+            'read' => false,
         ],
         'post' => [
 //            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
@@ -73,8 +78,7 @@ use JetBrains\PhpStorm\Pure;
         'groups' => ['article:write']
     ],
 )]
-#[ApiFilter(SearchFilter::class, properties: ['game.slug' => 'exact', 'tags.slug' => 'exact'])]
-#[ApiFilter(ExistsFilter::class, properties: ['popular'])]
+//#[ApiFilter(SearchFilter::class, properties: ['game.slug' => 'exact', 'tags.slug' => 'exact'])]
 class Article
 {
     /**
