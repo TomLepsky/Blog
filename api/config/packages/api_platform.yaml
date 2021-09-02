@@ -22,6 +22,8 @@ api_platform:
     defaults:
 #        url_generation_strategy: !php/const ApiPlatform\Core\Api\UrlGeneratorInterface::ABS_URL
         stateless: true
+        pagination_items_per_page: 10
+        pagination_maximum_items_per_page: 20
         cache_headers:
             vary: ['Content-Type', 'Authorization', 'Origin']
     collection:

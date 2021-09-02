@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
 use App\Entity\Article;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -83,7 +85,13 @@ class ArticleRepository extends ServiceEntityRepository
         return !empty($result) ? $result[0] : null;
     }
 
-    public function search(array $parameters = []) : array
+    /**
+     * @param array $parameters
+     * @param int $page
+     * @param int $pageSize
+     * @return Paginator
+     */
+    public function search(array $parameters = [], int $page = 1, int $pageSize = 15) : Paginator
     {
         $query = "
             SELECT a FROM App\Entity\Article a
@@ -94,8 +102,6 @@ class ArticleRepository extends ServiceEntityRepository
         $bindParameters = [];
         if (!empty($parameters)) {
             $whereClause = [];
-
-
             foreach ($parameters as $key => $value) {
                 switch ($key) {
                     case self::TAGS_SLUG:
@@ -105,7 +111,6 @@ class ArticleRepository extends ServiceEntityRepository
 
                         $nestedWhereClause = [];
                         $count = count($value);
-
                         for ($i = 0; $i < $count; $i++) {
                             $bind = "tag_slug_{$i}";
                             $nestedWhereClause[] = "t2.slug = :{$bind}";
@@ -130,7 +135,7 @@ class ArticleRepository extends ServiceEntityRepository
 
                     case self::HEADER:
                         if (strlen($value) < 4) {
-                            continue;
+                            break;
                         }
                         $bind = "header";
                         $whereClause[self::HEADER] = "a.header LIKE :{$bind}";
@@ -143,6 +148,15 @@ class ArticleRepository extends ServiceEntityRepository
             $query .= "WHERE {$whereClause}";
         }
 
-        return $this->getEntityManager()->createQuery($query)->setParameters($bindParameters)->getResult();
+        $firstResult = ($page - 1) * $pageSize;
+        return new Paginator(
+            new DoctrinePaginator(
+                $this->getEntityManager()
+                    ->createQuery($query)
+                    ->setParameters($bindParameters)
+                    ->setFirstResult($firstResult)
+                    ->setMaxResults($pageSize)
+            )
+        );
     }
 }

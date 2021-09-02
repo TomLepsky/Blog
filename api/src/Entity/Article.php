@@ -74,9 +74,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 //            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
         ]
     ],
+    attributes: [
+        'pagination_client_items_per_page' => true,
+    ],
     denormalizationContext: [
         'groups' => ['article:write']
-    ],
+    ]
 )]
 //#[ApiFilter(SearchFilter::class, properties: ['game.slug' => 'exact', 'tags.slug' => 'exact'])]
 class Article
@@ -245,7 +248,7 @@ class Article
 
     private function calculateReadingTime() : int
     {
-        return (int) count(explode(" ", $this->content)) * 0.3;
+        return (int) ceil(count(explode(" ", $this->content)) * 0.005);
     }
 
     public function getId(): int

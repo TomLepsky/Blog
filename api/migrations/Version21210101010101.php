@@ -17,10 +17,12 @@ class Version21210101010101 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $gamesCount = 4;
-        $tagsCount = 10;
-        $articlesCount = 40;
+        $tagsCount = 20;
+        $articlesCount = 60;
         $gameTags = [];
         $articlesGame = [];
+        $minSentence = 21;
+        $maxSentence = 81;
         $date = new DateTime();
 
         for ($i = 1; $i <= $gamesCount; $i++) {
@@ -51,23 +53,23 @@ class Version21210101010101 extends AbstractMigration
             $articlesGame["{$i}"] = $gameId;
 
             $sentences = [
-                'The rivers served as passageways for explorers and traders over the following two centuries.',
-                'During the War of 1812 between Britain and the United States, the Rideau provided the British with a safe shipping route from the Ottawa River to Kingston, on Lake Ontario, thus spurring settlement of Ottawa. ',
-                'Metal may also be cast in solid, hammered, carved, or incised forms. ',
-                'The mobile is a construction that moves and is intended to be seen in motion. ',
-                'Mobiles utilize a wide variety of materials and techniques (see also stabile). ',
-                'Contemporary practice emphasizes the beauty of materials and the expression of their nature in the work. ',
-                'Bronze casting is also a technique of extreme antiquity (see bronze sculpture). ',
-                'The Greeks and Chinese mastered the cire perdue (lost-wax) process, which was revived in the Renaissance and widely practiced until modern times. '
+                'The rivers served as passageways for explorers and traders over the following two centuries.\r\n',
+                'During the War of 1812 between Britain and the United States, the Read provided the British with a safe shipping route from the Ottawa River to Kingston, on Lake Ontario, thus spurring settlement of Ottawa.\r\n ',
+                'Metal may also be cast in solid, hammered, carved, or incised forms.\r\n ',
+                'The mobile is a construction that moves and is intended to be seen in motion.\r\n ',
+                'Mobiles utilize a wide variety of materials and techniques (see also stable).\r\n ',
+                'Contemporary practice emphasizes the beauty of materials and the expression of their nature in the work.\r\n ',
+                'Bronze casting is also a technique of extreme antiquity (see bronze sculpture).\r\n ',
+                'The Greeks and Chinese mastered the cire peruse (lost-wax) process, which was revived in the Renaissance and widely practiced until modern times.\r\n '
             ];
             $content = '';
-            $size = rand(8, 21);
+            $size = rand($minSentence, $maxSentence);
             $n = count($sentences) - 1;
             for ($j = 0; $j < $size; $j++) {
                 $content .= $sentences[rand(0, $n)];
             }
 
-            $timeToRead = (int) count(explode(" ", $content)) * 0.3;
+            $timeToRead = (int) ceil(count(explode(" ", $content)) * 0.005);
             $this->addSql(
                 "INSERT INTO blogapi.article
                 (id, preview_image_id, detail_image_id, game_id, popular_id, header, content, slug, time_to_read, created_at, updated_at, title, description, og_title, og_description, key_words) VALUES
