@@ -93,6 +93,8 @@ ingress:
     - host: blog.feature.zone
       paths:
         - /api
+        - /admin
+        - /docs
   tls:
    - secretName: echo-tls
      hosts:
