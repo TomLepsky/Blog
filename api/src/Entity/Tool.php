@@ -34,6 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: [
         'groups' => ['tool:read']
     ],
+    routePrefix: '/api'
 )]
 class Tool
 {

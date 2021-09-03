@@ -1,8 +1,8 @@
 api_platform:
-#    absolute_url: https://blog.feature.zone/api
     allow_plain_identifiers: true
     title: Wowvendor blog API Platform
     version: 1.0.0
+    show_webby: true
 #    enable_profiler: false
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']

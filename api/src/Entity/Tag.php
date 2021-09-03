@@ -54,6 +54,7 @@ use App\Security\Voter\VoterAttribute;
     denormalizationContext: [
         'groups' => ['tag:write']
     ],
+    routePrefix: '/api'
 )]
 #[ApiFilter(SearchFilter::class, properties: ['game.slug' => 'exact'])]
 class Tag

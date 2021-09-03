@@ -61,6 +61,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: [
         'groups' => ['game:write']
     ],
+    routePrefix: '/api'
 )]
 class Game
 {
