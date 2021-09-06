@@ -5,9 +5,11 @@ namespace App\Controller;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
@@ -16,34 +18,41 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 class SecurityController extends AbstractController
 {
     /**
-     * @Route(path="/login", methods={"POST"});
-     * @param Request $request
-     * @return ResponseInterface
-     * @throws TransportExceptionInterface
+     * @Route(path="/login", name="app_login", methods={"POST"});
      */
-    public function login(Request $request): ResponseInterface
+    public function login(Request $request): Response // ResponseInterface
     {
         $userData = json_decode($request->getContent());
-
         if (!isset($userData->login, $userData->password)) {
             throw new AuthenticationException('You should pass two parameters: login and password.');
         }
 
-        $client = HttpClient::create();
-        return $client->request(
-            'POST',
-            getenv('REMOTE_AUTH_SERVER_ADDR') . getenv('URI_LOGIN'),
-            [
-                'json' => [
-                    'login' => $userData->login,
-                    'password' => $userData->password
-                ],
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json'
-                ],
+        if (!($user = $this->getUser())) {
+            throw new AuthenticationException("Authentication failed!");
+        }
+
+        return $this->json([
+            'status' => 200,
+            'data' => [
+                'user' => $user->getUserIdentifier(),
+                'attributes' => $user->getPermissions()
             ]
-        );
+        ]);
+//        $client = HttpClient::create();
+//        return $client->request(
+//            'POST',
+//            getenv('REMOTE_AUTH_SERVER_ADDR') . getenv('URI_LOGIN'),
+//            [
+//                'json' => [
+//                    'login' => $userData->login,
+//                    'password' => $userData->password
+//                ],
+//                'headers' => [
+//                    'Content-Type' => 'application/json',
+//                    'Accept' => 'application/json'
+//                ],
+//            ]
+//        );
     }
 
     /**
@@ -102,4 +111,9 @@ class SecurityController extends AbstractController
 
         return $response;
     }
+
+    /**
+     * @Route("/logout", name="app_logout", methods={"GET"})
+     */
+    public function logout(): void {}
 }

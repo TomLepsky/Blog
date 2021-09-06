@@ -33,7 +33,7 @@ use App\Security\Voter\VoterAttribute;
             ],
         ],
         'post' => [
-//            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
+            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
         ]
     ],
     itemOperations: [
@@ -45,10 +45,10 @@ use App\Security\Voter\VoterAttribute;
             'output' => TagOutput::class
         ],
         'put' => [
-//            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
+            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
         ],
         'delete' => [
-//            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
+            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
         ]
     ],
     denormalizationContext: [

@@ -24,6 +24,8 @@ class ApiResponseSubscriber implements EventSubscriberInterface
     private array $excludedRoutes = [
         'api_doc',
         'app_swaggerui_docs',
+        'app_login',
+        'app_logout'
     ];
 
     public static function getSubscribedEvents() : array

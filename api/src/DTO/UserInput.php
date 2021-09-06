@@ -8,6 +8,8 @@ class UserInput
 
     public string $login;
 
+    public ?string $password;
+
     public bool $isAdmin;
 
     public ?string $token;

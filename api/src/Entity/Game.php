@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'output' => GameOutput::class
         ],
         'post' => [
-//            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
+            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
         ]
     ],
     itemOperations: [
@@ -52,10 +52,10 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
         ],
         'put' => [
-//            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
+            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
         ],
         'delete' => [
-//            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
+            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
         ]
     ],
     denormalizationContext: [
