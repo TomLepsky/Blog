@@ -56,7 +56,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'read' => false,
         ],
         'post' => [
-//            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
+            "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
         ]
     ],
     itemOperations: [
@@ -66,12 +66,13 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'skip_null_values' => true
             ],
             'output' => ArticleItemOutput::class,
+//            "security_post_denormalize" => "is_granted('" . VoterAttribute::READ . "', object)",
         ],
         'put' => [
-//            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
+            "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
         ],
         'delete' => [
-//            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
+            "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
         ]
     ],
     attributes: [

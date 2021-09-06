@@ -15,6 +15,7 @@ class UserInputDataTransformer implements DataTransformerInterface
         $user = new User();
         $user->setId($object->id);
         $user->setLogin($object->login);
+        $user->setPassword($object->password);
         $user->setIsAdmin($object->isAdmin);
         $user->setToken($object->token);
         $user->setPermissions($object->permissions);
