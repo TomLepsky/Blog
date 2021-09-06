@@ -65,7 +65,7 @@ spec:
           #    path: /
           #    port: admin
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.caddy.resources | nindent 12 }}
         - name: {{ .Chart.Name }}-php
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -138,7 +138,7 @@ spec:
             initialDelaySeconds: 120
             periodSeconds: 3
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.php.resources | nindent 12 }}
       volumes:
       - name: php-socket
         emptyDir: {}

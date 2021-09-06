@@ -20,6 +20,13 @@ php:
     - "10.0.0.0/8"
     - "172.16.0.0/12"
     - "192.168.0.0/16"
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 500m
+      memory: 512Mi
 
 
 
@@ -31,6 +38,13 @@ caddy:
     tag: "latest"
   # If you use Mercure, you need the managed or the On Premise version to deploy more than one pod: https://mercure.rocks/docs/hub/cluster
   replicaCount: 1
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 500m
+      memory: 512Mi
 
 # You may prefer using the managed version in production: https://mercure.rocks
 mercure:
@@ -99,18 +113,6 @@ ingress:
    - secretName: echo-tls
      hosts:
        - blog.feature.zone
-
-resources: 
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-   limits:
-     cpu: 100m
-     memory: 228Mi
-   requests:
-     cpu: 100m
-     memory: 228Mi
 
 autoscaling:
   enabled: false
