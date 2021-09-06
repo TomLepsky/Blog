@@ -105,13 +105,11 @@ ingress:
   hosts:
     - host: blog.feature.zone
       paths:
-        - /api
-        - /admin
-        - /docs
+        - /
   tls:
    - secretName: echo-tls
      hosts:
-       - blog.feature.zone
+       - api.blog.feature.zone
 
 autoscaling:
   enabled: false
