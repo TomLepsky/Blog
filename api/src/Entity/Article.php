@@ -80,8 +80,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     denormalizationContext: [
         'groups' => ['article:write']
-    ],
-    routePrefix: '/api'
+    ]
 )]
 //#[ApiFilter(SearchFilter::class, properties: ['game.slug' => 'exact', 'tags.slug' => 'exact'])]
 class Article
