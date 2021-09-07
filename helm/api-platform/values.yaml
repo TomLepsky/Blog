@@ -45,12 +45,12 @@ caddy:
     limits:
       cpu: 500m
       memory: 512Mi
-  server_name: "api.blog.wowvendor.com"
+  server_name: "api-blog.feature.zone"
 
 # You may prefer using the managed version in production: https://mercure.rocks
 mercure:
   publishUrl: ""
-  subscribeUrl: https://blog.feature.zone/.well-known/mercure
+  subscribeUrl: https://api-blog.feature.zone/.well-known/mercure
   # Change me!
   jwtToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXJjdXJlIjp7InB1Ymxpc2giOltdfX0.Oo0yg7y4yMa1vr_bziltxuTCqb8JVHKxp-f_FwwOim0"
   # Change me/!
@@ -105,13 +105,13 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-send-timeout: '800'
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
   hosts:
-    - host: api.blog.feature.zone
+    - host: api-blog.feature.zone
       paths:
         - /
   tls:
    - secretName: echo-tls
      hosts:
-       - api.blog.feature.zone
+       - api-blog.feature.zone
 
 autoscaling:
   enabled: false
