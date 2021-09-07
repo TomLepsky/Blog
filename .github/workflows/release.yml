@@ -50,10 +50,31 @@ jobs:
           docker push ${{ secrets.DOCKER_REGISTRY_URL }}blog/php:latest
           docker push ${{ secrets.DOCKER_REGISTRY_URL }}blog/php:${GITHUB_SHA::8}
 
+  build-pwa:
+    runs-on: [ self-hosted ]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Log into GitHub Container Registry
+        run: |
+          mkdir -p ~/.docker
+          echo "{\"auths\": {\"registry.digitalocean.com\": {\"auth\": \""${{ secrets.DOCKER_REGISTRY_TOKEN }}"\"},\"HttpHeaders\": {\"User-Agent\": \"Docker-Client/19.03.12\"}}}" > ~/.docker/config.json
+
+      - name: Build image
+        run: |
+          docker build -t ${{ secrets.DOCKER_REGISTRY_URL }}blog/pwa:latest -t  ${{ secrets.DOCKER_REGISTRY_URL }}blog/pwa:${GITHUB_SHA::8} pwa --target api_platform_pwa_prod
+
+      - name: Push image to GitHub Container Registry
+        run: |
+          docker push ${{ secrets.DOCKER_REGISTRY_URL }}blog/pwa:latest
+          docker push ${{ secrets.DOCKER_REGISTRY_URL }}blog/pwa:${GITHUB_SHA::8}
+
   deploy-prod:
     needs:
       - build-php
       - build-caddy
+      - build-pwa
     runs-on: [self-hosted]
 
     steps:

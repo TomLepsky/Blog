@@ -36,16 +36,18 @@ spec:
           env:
             - name: SERVER_NAME
               value: :80
+            - name: PWA_UPSTREAM
+              value: {{ include "api-platform.fullname" . }}-pwa:3000
             - name: MERCURE_PUBLISHER_JWT_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ include "api-platform.fullname" . }}
-                  key: mercure-publisher-jwt-key
+                  key: mercure-jwt-secret
             - name: MERCURE_SUBSCRIBER_JWT_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ include "api-platform.fullname" . }}
-                  key: mercure-subscriber-jwt-key
+                  key: mercure-jwt-secret
           ports:
             - name: http
               containerPort: 80
@@ -56,16 +58,22 @@ spec:
           volumeMounts:
             - mountPath: /var/run/php
               name: php-socket
-          #livenessProbe:
-          #  httpGet:
-          #    path: /
-          #    port: admin
-          #readinessProbe:
-          #  httpGet:
-          #    path: /
-          #    port: admin
+          lifecycle:
+            preStop:
+              exec:
+                command: ["curl", "-XPOST", "http://localhost:2019/stop"]
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 3
           resources:
-            {{- toYaml .Values.caddy.resources | nindent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
         - name: {{ .Chart.Name }}-php
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
@@ -107,24 +115,28 @@ spec:
                 secretKeyRef:
                   name: {{ include "api-platform.fullname" . }}
                   key: database-url
-            - name: MERCURE_PUBLISH_URL
+            - name: MERCURE_URL
               valueFrom:
                 configMapKeyRef:
                   name: {{ include "api-platform.fullname" . }}
-                  key: mercure-publish-url
-            - name: MERCURE_SUBSCRIBE_URL
+                  key: mercure-url
+            - name: MERCURE_PUBLIC_URL
               valueFrom:
                 configMapKeyRef:
                   name: {{ include "api-platform.fullname" . }}
-                  key: mercure-subscribe-url
-            - name: MERCURE_JWT_TOKEN
+                  key: mercure-public-url
+            - name: MERCURE_JWT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ include "api-platform.fullname" . }}
-                  key: mercure-jwt-token
+                  key: mercure-jwt-secret
           volumeMounts:
             - mountPath: /var/run/php
               name: php-socket
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "/bin/sleep 1; kill -QUIT 1"]
           readinessProbe:
             exec:
               command:
@@ -138,7 +150,7 @@ spec:
             initialDelaySeconds: 120
             periodSeconds: 3
           resources:
-            {{- toYaml .Values.php.resources | nindent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
       volumes:
       - name: php-socket
         emptyDir: {}

@@ -20,15 +20,13 @@ php:
     - "10.0.0.0/8"
     - "172.16.0.0/12"
     - "192.168.0.0/16"
-  resources:
-    requests:
-      cpu: 100m
-      memory: 256Mi
-    limits:
-      cpu: 100m
-      memory: 256Mi
 
-
+pwa:
+  image:
+    repository: "registry.digitalocean.com/wowvendor/blog/pwa"
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "latest"
 
 caddy:
   image:
@@ -38,24 +36,13 @@ caddy:
     tag: "latest"
   # If you use Mercure, you need the managed or the On Premise version to deploy more than one pod: https://mercure.rocks/docs/hub/cluster
   replicaCount: 1
-  resources:
-    requests:
-      cpu: 100m
-      memory: 256Mi
-    limits:
-      cpu: 100m
-      memory: 256Mi
 
 # You may prefer using the managed version in production: https://mercure.rocks
 mercure:
-  publishUrl: ""
-  subscribeUrl: https://api-blog.feature.zone/.well-known/mercure
+  publicUrl: https://chart-example.local/.well-known/mercure
   # Change me!
-  jwtToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXJjdXJlIjp7InB1Ymxpc2giOltdfX0.Oo0yg7y4yMa1vr_bziltxuTCqb8JVHKxp-f_FwwOim0"
-  # Change me/!
-  publisherJwtKey: "!ChangeMe!"
-  # Change me!
-  subscriberJwtKey: "!ChangeMe!"
+  jwtSecret: "!ChangeMe!"
+  corsAllowedOrigins: "^https?://.*?\\.chart-example\\.local$"
 
 mysql:
   name: mysql
@@ -112,6 +99,13 @@ ingress:
      hosts:
        - api-blog.feature.zone
 
+resources: 
+   limits:
+     cpu: 100m
+     memory: 128Mi
+   requests:
+     cpu: 100m
+     memory: 128Mi
 autoscaling:
   enabled: false
   minReplicas: 1
