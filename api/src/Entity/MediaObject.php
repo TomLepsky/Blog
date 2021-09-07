@@ -68,8 +68,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     ],
     normalizationContext: [
         'groups' => ['mediaObject:read']
-    ],
-    routePrefix: '/api'
+    ]
 )]
 class MediaObject
 {
@@ -120,11 +119,6 @@ class MediaObject
      * @ORM\OneToMany(targetEntity=Tool::class, mappedBy="mediaObject")
      */
     private ?Collection $tools;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=Article::class, mappedBy="mediaObjects")
-     */
-    private ?Collection $articles;
 
     public function __construct()
     {
