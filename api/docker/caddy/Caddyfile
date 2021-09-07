@@ -17,13 +17,13 @@ log
 # except for known API paths and paths with extensions handled by API Platform
 @pwa expression `(
         {header.Accept}.matches("\\btext/html\\b")
-        && !{path}.matches("(?i)(?:^/docs|^/graphql|^/bundles/|^/images/|^/_profiler|^/_wdt|\\.(?:json|html$|csv$|ya?ml$|xml$))")
+        && !{path}.matches("(?i)(?:^/api/docs|^/api/graphql|^/api/bundles/|^/api/images/|^/api/_profiler|^/api/_wdt|\\.(?:json|html$|csv$|ya?ml$|xml$))")
     )
     || {path} == "/favicon.ico"
     || {path} == "/manifest.json"
     || {path} == "/robots.txt"
-    || {path}.startsWith("/_next")
-    || {path}.startsWith("/sitemap")`
+    || {path}.startsWith("/api/_next")
+    || {path}.startsWith("/api/sitemap")`
 
 route {
     root * /srv/api/public
