@@ -35,7 +35,7 @@ spec:
           imagePullPolicy: {{ .Values.caddy.image.pullPolicy }}
           env:
             - name: SERVER_NAME
-              value: :80
+              value: "{{ .Values.caddy.server_name }}"
             - name: MERCURE_PUBLISHER_JWT_KEY
               valueFrom:
                 secretKeyRef:

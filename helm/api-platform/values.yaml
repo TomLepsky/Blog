@@ -45,6 +45,7 @@ caddy:
     limits:
       cpu: 500m
       memory: 512Mi
+  server_name: "api.blog.wowvendor.com"
 
 # You may prefer using the managed version in production: https://mercure.rocks
 mercure:

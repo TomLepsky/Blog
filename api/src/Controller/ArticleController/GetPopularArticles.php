@@ -8,7 +8,7 @@ use App\Repository\ArticleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
-#[AsController]
+#[AsController]GetPopularArticles
 class GetPopularArticles extends AbstractController
 {
     public function __construct(private ArticleMapper $articleMapper) {}
