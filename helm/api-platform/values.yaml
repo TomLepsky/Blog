@@ -91,13 +91,17 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-send-timeout: '800'
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
   hosts:
-    - host: api-blog.feature.zone
+    - host: blog.feature.zone
       paths:
-        - /
+        - /api
+        - /admin
+        - /docs
+        - /bundles
+        - /_next
   tls:
    - secretName: echo-tls
      hosts:
-       - api-blog.feature.zone
+       - blog.feature.zone
 
 resources: 
    limits:
