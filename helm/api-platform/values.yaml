@@ -25,8 +25,8 @@ php:
       cpu: 100m
       memory: 256Mi
     limits:
-      cpu: 500m
-      memory: 512Mi
+      cpu: 100m
+      memory: 256Mi
 
 
 
@@ -43,9 +43,8 @@ caddy:
       cpu: 100m
       memory: 256Mi
     limits:
-      cpu: 500m
-      memory: 512Mi
-  server_name: "api-blog.feature.zone"
+      cpu: 100m
+      memory: 256Mi
 
 # You may prefer using the managed version in production: https://mercure.rocks
 mercure:
