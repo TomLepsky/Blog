@@ -83,7 +83,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'groups' => ['article:write']
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['game.slug' => 'exact', 'tags.slug' => 'exact'])]
+//#[ApiFilter(SearchFilter::class, properties: ['game.slug' => 'exact', 'tags.slug' => 'exact'])]
 class Article
 {
     /**
