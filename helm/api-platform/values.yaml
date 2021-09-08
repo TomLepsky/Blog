@@ -97,7 +97,6 @@ ingress:
         - /admin
         - /docs
         - /bundles
-        - /_next
   tls:
    - secretName: echo-tls
      hosts:
