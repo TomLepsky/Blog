@@ -66,7 +66,6 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'skip_null_values' => true
             ],
             'output' => ArticleItemOutput::class,
-//            "security_post_denormalize" => "is_granted('" . VoterAttribute::READ . "', object)",
         ],
         'put' => [
             "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
