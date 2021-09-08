@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Controller\ArticleController\GetPopularArticles;
 use App\Controller\ArticleController\SearchArticlesAction;
 use App\DTO\Article\ArticleItemOutput;
@@ -81,7 +83,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'groups' => ['article:write']
     ]
 )]
-//#[ApiFilter(SearchFilter::class, properties: ['game.slug' => 'exact', 'tags.slug' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['game.slug' => 'exact', 'tags.slug' => 'exact'])]
 class Article
 {
     /**
