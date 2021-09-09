@@ -5,7 +5,6 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use App\DTO\GameOutput;
-use App\Embeddable\MetaInformation;
 use App\Repository\GameRepository;
 use App\Security\Voter\VoterAttribute;
 use Doctrine\Common\Collections\ArrayCollection;

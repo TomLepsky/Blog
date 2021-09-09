@@ -16,6 +16,7 @@ class Version21210101010101 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
+        /* <---------- CONFIG ----------> */
         $gamesCount = 4;
         $tagsCount = 20;
         $articlesCount = 60;
@@ -24,7 +25,23 @@ class Version21210101010101 extends AbstractMigration
         $minSentence = 21;
         $maxSentence = 81;
         $date = new DateTime();
+        /* </---------- CONFIG ----------> */
 
+        /* <---------- USERS ----------> */
+        $this->addSql("INSERT INTO blogapi.user (id, login, roles, password) VALUES (1, 'root', '[\"ROLE_USER\", \"ROLE_ADMIN\"]', '$2y$13\$KIdJNBjRLeGxci8qRQmBWOqUKdrjqIyyEzNrfNzT9wP6RB0fLVg7G')");
+        $this->addSql("INSERT INTO blogapi.user (id, login, roles, password) VALUES (2, 'noob', '[\"ROLE_USER\"]', '$2y$13\$KIdJNBjRLeGxci8qRQmBWOqUKdrjqIyyEzNrfNzT9wP6RB0fLVg7G')");
+        /* </---------- USERS ----------> */
+
+        /* <---------- ENTITY PERMISSION ----------> */
+        $this->addSql("INSERT INTO blogapi.entity_permission (id, user_id, name, can_read, can_create, can_edit, can_delete) VALUES (1, 1, 'Article', 1, 1, 1, 1)");
+        $this->addSql("INSERT INTO blogapi.entity_permission (id, user_id, name, can_read, can_create, can_edit, can_delete) VALUES (2, 1, 'Game', 1, 1, 1, 1)");
+        $this->addSql("INSERT INTO blogapi.entity_permission (id, user_id, name, can_read, can_create, can_edit, can_delete) VALUES (3, 1, 'Tag', 1, 1, 1, 1)");
+        $this->addSql("INSERT INTO blogapi.entity_permission (id, user_id, name, can_read, can_create, can_edit, can_delete) VALUES (4, 1, 'MediaObject', 1, 1, 1, 1)");
+        $this->addSql("INSERT INTO blogapi.entity_permission (id, user_id, name, can_read, can_create, can_edit, can_delete) VALUES (5, 2, 'Article', 1, 0, 0, 0)");
+        $this->addSql("INSERT INTO blogapi.entity_permission (id, user_id, name, can_read, can_create, can_edit, can_delete) VALUES (6, 2, 'Tag', 0, 0, 0, 0)");
+        /* </---------- ENTITY PERMISSION ----------> */
+
+        /* <---------- GAMES ----------> */
         for ($i = 1; $i <= $gamesCount; $i++) {
             $weight = rand(0, 200);
             $this->addSql(
@@ -33,7 +50,9 @@ class Version21210101010101 extends AbstractMigration
                     ({$i}, null, 'game_{$i}', 'game_slug_{$i}', {$weight}, 'title_{$i}', 'description_{$i}', 'og_title_{$i}', 'og_description_{$i}', 'key_word_{$i}')"
             );
         }
+        /* </---------- GAMES ----------> */
 
+        /* <---------- TAGS ----------> */
         for ($i = 1; $i <= $tagsCount; $i++) {
             $gameId = rand(1, $gamesCount);
             $gameTags["{$gameId}"][] = $i;
@@ -44,7 +63,9 @@ class Version21210101010101 extends AbstractMigration
                 ({$i}, {$gameId}, 'tag_{$i}', 'tag_slug_{$i}', 0, 'title_{$i}', 'description_{$i}', 'og_title_{$i}', 'og_description_{$i}', 'key_word_{$i}')"
             );
         }
+        /* </---------- TAGS ----------> */
 
+        /* <---------- ARTICLES ----------> */
         for ($i = 1; $i <= $articlesCount; $i++) {
             $updatedAt = $date->format(DateTimeInterface::W3C);
             $createdAt = $date->format(DateTimeInterface::W3C);
@@ -80,7 +101,9 @@ class Version21210101010101 extends AbstractMigration
                 $this->addSql("UPDATE blogapi.article SET popular_id = {$gameId} WHERE id = {$i}");
             }
         }
+        /* </---------- ARTICLES ----------> */
 
+        /* </---------- ARTICLES-TAGS ----------> */
         for ($i = 1; $i <= $articlesCount; $i++) {
             $gameId = $articlesGame["{$i}"];
             if (!isset($gameTags["{$gameId}"])) {
@@ -105,6 +128,7 @@ class Version21210101010101 extends AbstractMigration
                 $tags[$tagsSize - 1 - $j] = $temp;
             }
         }
+        /* </---------- ARTICLES-TAGS ----------> */
     }
 
     public function down(Schema $schema): void

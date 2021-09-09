@@ -7,7 +7,14 @@ framework:
     trusted_hosts: '%env(TRUSTED_HOSTS)%'
     # See https://caddyserver.com/docs/caddyfile/directives/reverse_proxy#headers
     trusted_headers: ['x-forwarded-for', 'x-forwarded-proto']
-
+    
+    session:
+        enabled: true
+        handler_id: ~
+        cookie_secure: auto
+        cookie_samesite: lax
+        cookie_httponly: true
+        
     #esi: true
     #fragments: true
     php_errors:

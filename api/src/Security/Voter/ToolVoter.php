@@ -3,6 +3,7 @@
 namespace App\Security\Voter;
 
 use App\Entity\Tool;
+use App\Security\PermissionManager;
 use Symfony\Component\Security\Core\Authentication\Token\NullToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -11,6 +12,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ToolVoter extends Voter
 {
+    public function __construct(private PermissionManager $manager) {}
+
     protected function supports(string $attribute, $subject): bool
     {
         return in_array($attribute, VoterAttribute::getAttributes()) && $subject instanceof Tool;
@@ -19,7 +22,7 @@ class ToolVoter extends Voter
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         if ($token instanceof NullToken) {
-            throw new AuthenticationException('No API token provided');
+            throw new AuthenticationException('Please login or provide API token!');
         }
 
         $user = $token->getUser();
@@ -27,7 +30,6 @@ class ToolVoter extends Voter
             throw new AuthenticationException('Authentication failed!');
         }
 
-        $permissions = $user->getPermissions();
-        return isset($permissions[Tool::class]) ? $permissions[Tool::class]->{$attribute} ?? false : false;
+        return (bool) $this->manager->resolve($attribute, $user, Tool::class);
     }
 }

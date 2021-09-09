@@ -4,8 +4,6 @@ namespace App\Subscriber;
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
 use ApiPlatform\Core\Exception\InvalidArgumentException;
-use Doctrine\Common\Util\Debug;
-use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -22,6 +20,7 @@ class ApiResponseSubscriber implements EventSubscriberInterface
     private int $totalItems;
 
     private array $excludedRoutes = [
+        'api_entrypoint',
         'api_doc',
         'app_swaggerui_docs',
         'app_login',
@@ -68,10 +67,16 @@ class ApiResponseSubscriber implements EventSubscriberInterface
             } elseif ($statusCode > 399 && $statusCode < 500 && $statusCode !== 404) {
                 $content = json_decode($responseObject->getContent());
                 $errorDetails = [];
-                foreach ($content->violations as $violation) {
+                if (isset($content->violations)) {
+                    foreach ($content->violations as $violation) {
+                        $errorDetails[] = [
+                            'field' => $violation->propertyPath,
+                            'issue' => $violation->message
+                        ];
+                    }
+                } elseif (isset($content->detail)) {
                     $errorDetails[] = [
-                        'field' => $violation->propertyPath,
-                        'issue' => $violation->message
+                        'issue' => $content->detail
                     ];
                 }
 
@@ -139,6 +144,15 @@ class ApiResponseSubscriber implements EventSubscriberInterface
             case $exception instanceof HttpExceptionInterface:
                 $response->setStatusCode($exception->getStatusCode());
                 $response->headers->replace($exception->getHeaders());
+                $response->setData(
+                    [
+                        'status' => $exception->getStatusCode(),
+                        'error' => [
+                            'name' => 'http_exception',
+                            'message' => $exception->getMessage(),
+                        ],
+                    ]
+                );
                 break;
             case $exception instanceof AccessDeniedException:
                 $response->setStatusCode(401);

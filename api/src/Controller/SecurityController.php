@@ -19,8 +19,10 @@ class SecurityController extends AbstractController
 {
     /**
      * @Route(path="/login", name="app_login", methods={"POST"});
+     * @param Request $request
+     * @return Response
      */
-    public function login(Request $request): Response // ResponseInterface
+    public function login(Request $request) : Response
     {
         $userData = json_decode($request->getContent());
         if (!isset($userData->login, $userData->password)) {
@@ -34,25 +36,9 @@ class SecurityController extends AbstractController
         return $this->json([
             'status' => 200,
             'data' => [
-                'user' => $user->getUserIdentifier(),
-                'attributes' => $user->getPermissions()
+                'user' => $user->getUserIdentifier()
             ]
         ]);
-//        $client = HttpClient::create();
-//        return $client->request(
-//            'POST',
-//            getenv('REMOTE_AUTH_SERVER_ADDR') . getenv('URI_LOGIN'),
-//            [
-//                'json' => [
-//                    'login' => $userData->login,
-//                    'password' => $userData->password
-//                ],
-//                'headers' => [
-//                    'Content-Type' => 'application/json',
-//                    'Accept' => 'application/json'
-//                ],
-//            ]
-//        );
     }
 
     /**

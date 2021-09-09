@@ -2,16 +2,18 @@ security:
     password_hashers:
         App\Security\User:
             algorithm: auto
+        App\Entity\Auth\User:
+            algorithm: auto
 
     # https://symfony.com/doc/current/security/experimental_authenticators.html
     enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
-#            entity:
-#                class: App\Security\User
-#                property: login
+        blog_user_provider:
+            entity:
+                class: App\Entity\Auth\User
+                property: login
+        remote_user_provider:
             id: App\Security\UserProvider
             
     firewalls:
@@ -19,6 +21,7 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+            stateless: false
 #            login_throttling:
 #                max_attempts: 5
 #                interval: '10 minutes'
@@ -30,10 +33,12 @@ security:
                 check_path: app_login
                 username_path: login
                 password_path: password
-#            lazy: true
-#            provider: app_user_provider
-#            custom_authenticators:
-#                - App\Security\ApiKeyAuthenticator
+                provider: blog_user_provider
+
+            lazy: true
+            provider: remote_user_provider
+            custom_authenticators:
+                - App\Security\ApiKeyAuthenticator
 
 
     # Note: Only the *first* access control that matches will be used
