@@ -25,7 +25,7 @@ class DateMapper
                 return "{$hours}h ago";
 
             default:
-                return $date->format(DateTimeInterface::W3C);
+                return $date->format('F d, Y');
         }
 
     }

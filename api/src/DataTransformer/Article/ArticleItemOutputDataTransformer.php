@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataTransformer;
+namespace App\DataTransformer\Article;
 
 use ApiPlatform\Core\DataTransformer\DataTransformerInterface;
 use App\DataMapper\DateMapper;
@@ -14,6 +14,7 @@ use Doctrine\Common\Util\Debug;
 class ArticleItemOutputDataTransformer implements DataTransformerInterface
 {
     public function __construct(private ArticleRepository $repository) {}
+
     /**
      * @param Article $object
      * @param string $to
@@ -50,7 +51,6 @@ class ArticleItemOutputDataTransformer implements DataTransformerInterface
         }
 
         $articleOutput->createdAt = $object->getCreatedAt();
-        $articleOutput->updatedAt = $object->getUpdatedAt();
         $articleOutput->mappedCreatedAt = DateMapper::mapArticlePublishDate($object->getCreatedAt());
 
         if (($previous = $this->repository->getBoundArticle($object->getCreatedAt(), ArticleRepository::PREVIOUS)) !== null) {
@@ -75,6 +75,9 @@ class ArticleItemOutputDataTransformer implements DataTransformerInterface
         $boundArticle->id = $article->getId();
         $boundArticle->slug = $article->getSlug();
         $boundArticle->header = $article->getHeader();
+        $boundArticle->timeToRead = $article->getTimeToRead();
+        $boundArticle->createdAt = $article->getCreatedAt();
+        $boundArticle->mappedCreatedAt = DateMapper::mapArticlePublishDate($article->getCreatedAt());
         $boundArticle->previewImage = $article->getPreviewImage();
 
         return $boundArticle;

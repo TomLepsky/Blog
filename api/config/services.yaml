@@ -20,6 +20,8 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
             - '../src/Tests/'
+            - '../src/DTO/'
+            - '../Embeddable/'
 
     App\Controller\:
         resource: '../src/Controller/'

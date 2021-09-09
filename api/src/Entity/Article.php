@@ -8,6 +8,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Controller\ArticleController\GetPopularArticles;
 use App\Controller\ArticleController\SearchArticlesAction;
+use App\DTO\Article\ArticleCollectionOutput;
 use App\DTO\Article\ArticleItemOutput;
 use App\Repository\ArticleRepository;
 use App\Security\Voter\VoterAttribute;
@@ -37,6 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'skip_null_values' => true
             ],
             'order' => ['createdAt' => 'DESC'],
+            'output' => ArticleCollectionOutput::class,
         ],
         'popular_articles' => [
             'method' => 'get',
@@ -46,6 +48,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'groups' => ['articleCollection:read'],
                 'skip_null_values' => true
             ],
+            'output' => ArticleCollectionOutput::class,
         ],
         'search_articles' => [
             'method' => 'get',
@@ -56,6 +59,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'skip_null_values' => true
             ],
             'read' => false,
+            'output' => ArticleCollectionOutput::class,
         ],
         'post' => [
             "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",

@@ -74,11 +74,6 @@ class ArticleItemOutput
     /**
      * @Groups({"articleItem:read"})
      */
-    public ?DateTimeInterface $updatedAt;
-
-    /**
-     * @Groups({"articleItem:read"})
-     */
     public ?MetaInformation $meta = null;
 
     /**
