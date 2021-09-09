@@ -21,6 +21,6 @@ class GetPopularArticles extends AbstractController
 
         /**  @var ArticleRepository $repository */
         $repository = $this->getDoctrine()->getRepository(Article::class);
-        return $this->articleMapper->mapPopular($repository->getPopularArticles());
+        return $this->articleMapper->mapPopular($repository->getPopularArticles($gameSlug));
     }
 }
