@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
 use App\Entity\Article;
+use App\Entity\Game;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
@@ -51,12 +52,18 @@ class ArticleRepository extends ServiceEntityRepository
     /**
      * @return Article[]
      */
-    public function getPopularArticles() : array
+    public function getPopularArticles(?string $game = null) : array
     {
-        return $this->createQueryBuilder('a')
-            ->where('a.popular IS NOT NULL')
-            ->getQuery()
-            ->getResult();
+        $queryBuilder = $this->createQueryBuilder('a');
+        if ($game !== null) {
+            $queryBuilder
+                ->innerJoin(Game::class, 'g', 'WITH', 'a.game = g.id')
+                ->andWhere('g.slug = :slug')
+                ->setParameter('slug', $game);
+        }
+        $queryBuilder->andWhere('a.popular IS NOT NULL');
+
+        return $queryBuilder->getQuery()->getResult();
     }
 
     /**

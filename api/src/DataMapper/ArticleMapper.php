@@ -7,6 +7,7 @@ use App\Entity\Article;
 class ArticleMapper
 {
     private const MAX_POPULAR_ARTICLES = 7;
+
     /**
      * @param Article[] $articles
      * @return array
