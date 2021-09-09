@@ -22,9 +22,9 @@ security:
             security: false
         main:
             stateless: false
-#            login_throttling:
-#                max_attempts: 5
-#                interval: '10 minutes'
+            login_throttling:
+                max_attempts: 5
+                interval: '10 minutes'
 
             logout:
                 path: app_logout
