@@ -18,7 +18,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 class SecurityController extends AbstractController
 {
     /**
-     * @Route(path="/login", name="app_login", methods={"POST"});
+     * @Route(path="/api/login", name="app_login", methods={"POST"});
      * @param Request $request
      * @return Response
      */
@@ -99,7 +99,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/logout", name="app_logout", methods={"GET"})
+     * @Route("/api/logout", name="app_logout", methods={"GET"})
      */
     public function logout(): void {}
 }
