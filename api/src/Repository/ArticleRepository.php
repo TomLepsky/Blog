@@ -19,14 +19,13 @@ use Doctrine\Persistence\ManagerRegistry;
 class ArticleRepository extends ServiceEntityRepository
 {
     public const PREVIOUS = 1;
-
     public const NEXT = 2;
 
     public const TAGS_SLUG = 'tags_slug';
-
     public const GAME_SLUG = 'game_slug';
-
     public const HEADER = 'header';
+
+    public const MAX_RELATED = 7;
 
     public const VALID_QUERY_PARAMETERS = [
         self::TAGS_SLUG,
@@ -50,6 +49,7 @@ class ArticleRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param string|null $game
      * @return Article[]
      */
     public function getPopularArticles(?string $game = null) : array

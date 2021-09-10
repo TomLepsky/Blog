@@ -7,6 +7,7 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Controller\ArticleController\GetPopularArticles;
+use App\Controller\ArticleController\GetRelatedArticles;
 use App\Controller\ArticleController\SearchArticlesAction;
 use App\DTO\Article\ArticleCollectionOutput;
 use App\DTO\Article\ArticleItemOutput;
@@ -40,7 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'order' => ['createdAt' => 'DESC'],
             'output' => ArticleCollectionOutput::class,
         ],
-        'popular_articles' => [
+        'articles_popular' => [
             'method' => 'get',
             'path' => '/articles/popular',
             'controller' => GetPopularArticles::class,
@@ -50,10 +51,21 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             'output' => ArticleCollectionOutput::class,
         ],
-        'search_articles' => [
+        'articles_search' => [
             'method' => 'get',
             'path' => '/articles/search',
             'controller' => SearchArticlesAction::class,
+            'normalization_context' => [
+                'groups' => ['articleCollection:read'],
+                'skip_null_values' => true
+            ],
+            'read' => false,
+            'output' => ArticleCollectionOutput::class,
+        ],
+        'articles_related' => [
+            'method' => 'get',
+            'path' => '/articles/related/{slug}',
+            'controller' => GetRelatedArticles::class,
             'normalization_context' => [
                 'groups' => ['articleCollection:read'],
                 'skip_null_values' => true
@@ -87,7 +99,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'groups' => ['article:write']
     ]
 )]
-//#[ApiFilter(SearchFilter::class, properties: ['game.slug' => 'exact', 'tags.slug' => 'exact'])]
+//#[ApiFilter(SearchFilter::class, properties: ['game.slug' => 'exact', 'tags.slug' => 'exact', 'header' => 'partial'])]
 class Article
 {
     /**
@@ -177,17 +189,22 @@ class Article
     private ?MediaObject $detailImage;
 
     /**
-     * @ORM\ManyToMany(targetEntity=self::class, inversedBy="children")
+     * @ORM\ManyToMany(targetEntity=self::class, inversedBy="parents")
+     * @ORM\JoinTable(
+     *     name = "article_article",
+     *     joinColumns = {@ORM\JoinColumn(name = "article_source", referencedColumnName = "id")},
+     *     inverseJoinColumns = {@ORM\JoinColumn(name = "article_target", referencedColumnName = "id")}
+     * )
      * @MaxDepth(1)
      */
     #[ApiProperty(
         readableLink: true,
         writableLink: true
     )]
-    private ?Collection $parents;
+    private ?Collection $children;
 
     /**
-     * @ORM\ManyToMany(targetEntity=self::class, mappedBy="parents")
+     * @ORM\ManyToMany(targetEntity=self::class, mappedBy="children")
      * @MaxDepth(1)
      * @Groups({"articleItem:read", "article:write"})
      */
@@ -195,7 +212,7 @@ class Article
         readableLink: true,
         writableLink: true
     )]
-    private ?Collection $children;
+    private ?Collection $parents;
 
     /**
      * @ORM\ManyToOne(targetEntity=Game::class, inversedBy="articles")

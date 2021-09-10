@@ -18,8 +18,9 @@ class Version21210101010101 extends AbstractMigration
     {
         /* <---------- CONFIG ----------> */
         $gamesCount = 4;
-        $tagsCount = 20;
+        $tagsCount = 25;
         $articlesCount = 60;
+        $maxRelatedArticles = 8;
         $gameTags = [];
         $articlesGame = [];
         $minSentence = 21;
@@ -129,6 +130,28 @@ class Version21210101010101 extends AbstractMigration
             }
         }
         /* </---------- ARTICLES-TAGS ----------> */
+
+        /* <---------- ARTICLES-ARTICLES ----------> */
+        for ($i = 1; $i <= $articlesCount; $i++) {
+            $relatedCount = rand(0, $maxRelatedArticles);
+            $exclude = [];
+            $relatedId = 0;
+            for ($j = 1; $j <= $relatedCount; $j++) {
+                while (true) {
+                    $relatedId = rand(1, $articlesCount);
+                    if (!in_array($relatedId, $exclude)) {
+                        break;
+                    }
+                }
+                $exclude[] = $relatedId;
+                $this->addSql(
+                    "insert into article_article
+                    (article_source, article_target) VALUES
+                    ($i, $relatedId)"
+                );
+            }
+        }
+        /* </---------- ARTICLES-ARTICLES ----------> */
     }
 
     public function down(Schema $schema): void
