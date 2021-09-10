@@ -13,7 +13,7 @@ php:
   appEnv: prod
   appDebug: "0"
   appSecret: ""
-  corsAllowOrigin: "^https://blog\\.feature\\.zone|https://dev\\.feature\\.zone|http://localhost:3000$"
+  corsAllowOrigin: "^https://blog\\.feature\\.zone|https://dev\\.feature\\.zone|http://localhost:3000|https://blog\\.feature\\.zone/$"
   trustedHosts: "^127\\.0\\.0\\.1|localhost|api-platform|.*\\.feature\\.zone$"
   trustedProxies:
     - "127.0.0.1"
