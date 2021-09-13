@@ -34,7 +34,7 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
 //        $content = json_decode($this->controller->getResponseByToken($identifier));
-
+        throw new UserNotFoundException("No API token supported now. Please use login form instead!");
         $content = new StdClass();
         $content->id = 1;
         $content->login = 'root';
