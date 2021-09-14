@@ -13,10 +13,10 @@ spec:
     - blog.wowvendor.com
    secretName: echo-tls
  rules:
- - host: /
+ - host: blog.wowvendor.com
    http:
      paths:
-     - path:
+     - path: /
        backend:
          serviceName: "s3proxy"
          servicePort: 80
