@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "s3proxy"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+  selector:
+    service: "s3proxy"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "s3proxy"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: "s3proxy"
+  template:
+    metadata:
+      labels:
+        service: "s3proxy"
+    spec:
+      imagePullSecrets:
+        - name: registry-wowvendor
+      containers:
+        - name: "s3proxy"
+          image: "pottava/s3-proxy"
+          imagePullPolicy: "Always"
+          {{- if (.Values.s3proxy.env) }}
+          env:
+            {{- if (.Values.s3proxy.env.plain) }}
+            {{- range $envName, $envValue := .Values.s3proxy.env.plain }}
+            - name: {{ $envName | quote }}
+              value: {{ $envValue | quote }}
+            {{- end }}
+            {{- end }}
+            {{- if (.Values.s3proxy.env.secret) }}
+            {{- range $envName, $secret := .Values.s3proxy.env.secret }}
+            - name: {{ $envName | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secret.name | quote }}
+                  key: {{ $secret.key | quote }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
