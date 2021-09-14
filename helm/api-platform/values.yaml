@@ -79,6 +79,23 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+s3proxy:
+  env:
+    plain:
+      AWS_REGION:
+      AWS_API_ENDPOINT: ams3.digitaloceanspaces.com
+      AWS_S3_BUCKET: blogimageswow
+      BASIC_AUTH_USER:
+      BASIC_AUTH_PASS:
+      ACCESS_LOG: false
+    secret:
+      AWS_ACCESS_KEY_ID:
+        name: "s3"
+        key: "ACCESS_KEY"
+      AWS_SECRET_ACCESS_KEY:
+        name: "s3"
+        key: "SECRET_KEY"
+
 service:
   type: ClusterIP
   port: 80
@@ -93,10 +110,7 @@ ingress:
   hosts:
     - host: blog.feature.zone
       paths:
-        - /api
-        - /admin
-        - /docs
-        - /bundles
+        - /
   tls:
    - secretName: echo-tls
      hosts:

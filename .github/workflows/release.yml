@@ -98,6 +98,13 @@ jobs:
           --from-literal=.dockerconfigjson="{\"auths\": {\"registry.digitalocean.com\": {\"auth\": \""${{ secrets.DOCKER_REGISTRY_TOKEN }}"\"}}}" \
           -o yaml --type=kubernetes.io/dockerconfigjson --dry-run | kubectl apply -f -
 
+      - name: Устанавливаем\обновляем секреты для подключения к S3
+        run: |
+          kubectl create -n wowvendor-core-dev-$(echo ${{ env.feature_branch }}) secret generic s3 \
+          --from-literal=ACCESS_KEY='${{ secrets.S3_TOKEN }}' \
+          --from-literal=SECRET_KEY='${{ secrets.S3_SECRET }}' \
+          -o yaml --dry-run | kubectl apply -f - 
+
       - name: Деплой
         run: |
           helm upgrade api-platform helm/api-platform \
