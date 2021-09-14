@@ -29,7 +29,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'post' => [
             'method' => 'post',
             'path' => '/media-objects',
-                "security_post_denormalize" => "is_granted('" . VoterAttribute::CREATE . "', object)",
             'controller' => CreateMediaObjectAction::class,
             'deserialize' => false,
             'validation_groups' => ['Default', 'mediaObject:create'],
@@ -81,27 +80,31 @@ class MediaObject
     private int $id;
 
     /**
-     * @Vich\UploadableField(mapping="media_object", fileNameProperty="fileName", size="fileSize")
+     * @Vich\UploadableField(mapping="media_object", fileNameProperty="fileName")
      * @Assert\NotNull(groups={"mediaObject:create"})
      */
     private ?File $file;
 
     /**
      * @ORM\Column(type="string")
-     * @Groups({"mediaObject:read"})
+     * @Groups({"mediaObject:read", "mediaObject:write"})
+     * @Assert\Regex(
+     *     pattern="/[^\w\-\.]+/",
+     *     match=false,
+     *     message="Slug should contain only letters, digits or symbols: -, _, ."
+     * )
      */
-    private ?string $fileName;
-
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"mediaObject:read"})
-     */
-    private ?int $fileSize;
+    private ?string $fileName = null;
 
     /**
      * @Groups({"mediaObject:read", "gameItem:read", "gameCollection:read"})
      */
     private ?string $original = null;
+
+    /**
+     * @Assert\Choice(callback = "getAvailableMimeTypes", message = "Unavailable mime type: {{ value }}")
+     */
+    private ?string $mimeType = null;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -123,7 +126,6 @@ class MediaObject
     public function __construct()
     {
         $this->tools = new ArrayCollection();
-        $this->articles = new ArrayCollection();
     }
 
     public function setFile(?File $file = null): void
@@ -155,29 +157,9 @@ class MediaObject
         $this->fileName = $fileName;
     }
 
-    public function getFileSize(): ?int
-    {
-        return $this->fileSize;
-    }
-
-    public function setFileSize(?int $fileSize): void
-    {
-        $this->fileSize = $fileSize;
-    }
-
     public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
-    }
-
-    public function getTools(): ?Collection
-    {
-        return $this->tools;
-    }
-
-    public function getArticles(): ?Collection
-    {
-        return $this->articles;
     }
 
     public function getOriginal(): ?string
@@ -198,5 +180,27 @@ class MediaObject
     public function setPlaceholder(?string $placeholder): void
     {
         $this->placeholder = $placeholder;
+    }
+
+    public function setMimeType(?string $mimeType): void
+    {
+        $this->mimeType = $mimeType;
+    }
+
+    public function getMimeType(): ?string
+    {
+        return $this->mimeType;
+    }
+
+    public function getAvailableMimeTypes() : array
+    {
+        return [
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/bmp',
+            'image/tiff',
+            'image/webp'
+        ];
     }
 }

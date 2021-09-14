@@ -78,6 +78,10 @@ class ApiResponseSubscriber implements EventSubscriberInterface
                     $errorDetails[] = [
                         'issue' => $content->detail
                     ];
+                } elseif (isset($content->error->message)) {
+                    $errorDetails[] = [
+                        'issue' => $content->error->message
+                    ];
                 }
 
                 $error = [

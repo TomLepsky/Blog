@@ -1,0 +1,16 @@
+services:
+    digitalocean_spaces_client:
+        class: 'AsyncAws\S3\S3Client'
+        arguments:
+            -   endpoint: '%env(DIGITALOCEAN_SPACES_ENDPOINT)%'
+                accessKeyId: '%env(DIGITALOCEAN_SPACES_ID)%'
+                accessKeySecret: '%env(DIGITALOCEAN_SPACES_SECRET)%'
+               
+flysystem:
+    storages:
+        digitalocean.storage:
+            adapter: 'asyncaws'
+            options:
+                client: 'digitalocean_spaces_client'
+                bucket: '%env(DIGITALOCEAN_SPACES_BUCKET_BLOG_IMG)%'
+                prefix: '%env(DIGITALOCEAN_SPACES_BUCKET_BLOG_IMG_PREFIX)%'

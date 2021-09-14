@@ -16,6 +16,18 @@
     "api-platform/schema-generator": {
         "version": "v3.0.0"
     },
+    "async-aws/core": {
+        "version": "1.11.0"
+    },
+    "async-aws/s3": {
+        "version": "1.9.1"
+    },
+    "aws/aws-crt-php": {
+        "version": "v1.0.2"
+    },
+    "aws/aws-sdk-php": {
+        "version": "3.193.2"
+    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.2"
     },
@@ -159,11 +171,39 @@
     "lcobucci/jwt": {
         "version": "4.1.4"
     },
+    "league/flysystem": {
+        "version": "2.2.3"
+    },
+    "league/flysystem-async-aws-s3": {
+        "version": "2.0.6"
+    },
+    "league/flysystem-aws-s3-v3": {
+        "version": "2.1.0"
+    },
+    "league/flysystem-bundle": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "913dc3d7a5a1af0d2b044c5ac3a16e2f851d7380"
+        },
+        "files": [
+            "config/packages/flysystem.yaml",
+            "var/storage/.gitignore"
+        ]
+    },
     "league/html-to-markdown": {
         "version": "4.10.0"
     },
+    "league/mime-type-detection": {
+        "version": "1.7.0"
+    },
     "monolog/monolog": {
         "version": "2.2.0"
+    },
+    "mtdowling/jmespath.php": {
+        "version": "2.6.1"
     },
     "nelmio/cors-bundle": {
         "version": "1.5",

@@ -15,9 +15,7 @@ class MediaObjectNormalizer implements ContextAwareNormalizerInterface, Normaliz
 
     private const ALREADY_CALLED = 'MEDIA_OBJECT_NORMALIZER_ALREADY_CALLED';
 
-    public function __construct(private StorageInterface $storage)
-    {
-    }
+    public function __construct(private StorageInterface $storage) {}
 
     public function supportsNormalization($data, string $format = null, array $context = []) : bool
     {
@@ -32,7 +30,7 @@ class MediaObjectNormalizer implements ContextAwareNormalizerInterface, Normaliz
     {
         $context[self::ALREADY_CALLED] = true;
 
-        $object->setOriginal($this->storage->resolveUri($object, 'file'));
+        $object->setOriginal("https://{$_SERVER['SERVER_NAME']}{$this->storage->resolveUri($object, 'file')}");
 
         return $this->normalizer->normalize($object, $format, $context);
     }

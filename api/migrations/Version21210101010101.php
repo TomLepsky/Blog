@@ -26,7 +26,16 @@ class Version21210101010101 extends AbstractMigration
         $minSentence = 21;
         $maxSentence = 81;
         $date = new DateTime();
+        $maxImageId = 5;
         /* </---------- CONFIG ----------> */
+
+        /* <---------- MEDIA-OBJECTS ----------> */
+        $this->addSql("INSERT INTO blogapi.media_object (id, file_name, placeholder, updated_at) VALUES (1, '6140b1f431e38_1.jpg', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAECAMAAACA5l7/AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAV1BMVEUAAAB6oZtKaWZxn5aGraUhPT9Lamk8VlYmQUIwd3hig35ihYApQD+U18lhfXpZcW6CqKAPJysvRENDX15EYWBIaGcpRkgpPj8xcG8zgH0xZWQ3enoAAACq7IQCAAAAHHRSTlMAAAAAAAAAAAAAGyQCBIOvEwNd1u5ZBUal3HoG3jmIAgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQflCBgKEBx81N/oAAAALklEQVQI12NgYGBg5OLmYWIAAWZePn4BFhCLVVBIWESUjR3I5BATl5CUkuZkAAAXPQF7p/dzxAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0wOC0yNFQxMDoxNjoyOC0wNDowMGt2sFYAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMDgtMjRUMTA6MTY6MjgtMDQ6MDAaKwjqAAAAAElFTkSuQmCC', '2021-09-14 14:30:12')");
+        $this->addSql("INSERT INTO blogapi.media_object (id, file_name, placeholder, updated_at) VALUES (2, '6140b202c9d13_2.jpg', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAECAMAAACA5l7/AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAV1BMVEUAAAB6oZtKaWZxn5aGraUhPT9Lamk8VlYmQUIwd3hig35ihYApQD+U18lhfXpZcW6CqKAPJysvRENDX15EYWBIaGcpRkgpPj8xcG8zgH0xZWQ3enoAAACq7IQCAAAAHHRSTlMAAAAAAAAAAAAAGyQCBIOvEwNd1u5ZBUal3HoG3jmIAgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQflCBgKEBx81N/oAAAALklEQVQI12NgYGBg5OLmYWIAAWZePn4BFhCLVVBIWESUjR3I5BATl5CUkuZkAAAXPQF7p/dzxAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0wOC0yNFQxMDoxNjoyOC0wNDowMGt2sFYAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMDgtMjRUMTA6MTY6MjgtMDQ6MDAaKwjqAAAAAElFTkSuQmCC', '2021-09-14 14:30:26')");
+        $this->addSql("INSERT INTO blogapi.media_object (id, file_name, placeholder, updated_at) VALUES (3, '6140b20cc330b_3.jpg', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAECAMAAACA5l7/AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAV1BMVEUAAAB6oZtKaWZxn5aGraUhPT9Lamk8VlYmQUIwd3hig35ihYApQD+U18lhfXpZcW6CqKAPJysvRENDX15EYWBIaGcpRkgpPj8xcG8zgH0xZWQ3enoAAACq7IQCAAAAHHRSTlMAAAAAAAAAAAAAGyQCBIOvEwNd1u5ZBUal3HoG3jmIAgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQflCBgKEBx81N/oAAAALklEQVQI12NgYGBg5OLmYWIAAWZePn4BFhCLVVBIWESUjR3I5BATl5CUkuZkAAAXPQF7p/dzxAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0wOC0yNFQxMDoxNjoyOC0wNDowMGt2sFYAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMDgtMjRUMTA6MTY6MjgtMDQ6MDAaKwjqAAAAAElFTkSuQmCC', '2021-09-14 14:30:36')");
+        $this->addSql("INSERT INTO blogapi.media_object (id, file_name, placeholder, updated_at) VALUES (4, '6140b21700486_4.jpg', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAECAMAAACA5l7/AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAV1BMVEUAAAB6oZtKaWZxn5aGraUhPT9Lamk8VlYmQUIwd3hig35ihYApQD+U18lhfXpZcW6CqKAPJysvRENDX15EYWBIaGcpRkgpPj8xcG8zgH0xZWQ3enoAAACq7IQCAAAAHHRSTlMAAAAAAAAAAAAAGyQCBIOvEwNd1u5ZBUal3HoG3jmIAgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQflCBgKEBx81N/oAAAALklEQVQI12NgYGBg5OLmYWIAAWZePn4BFhCLVVBIWESUjR3I5BATl5CUkuZkAAAXPQF7p/dzxAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0wOC0yNFQxMDoxNjoyOC0wNDowMGt2sFYAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMDgtMjRUMTA6MTY6MjgtMDQ6MDAaKwjqAAAAAElFTkSuQmCC', '2021-09-14 14:30:47')");
+        $this->addSql("INSERT INTO blogapi.media_object (id, file_name, placeholder, updated_at) VALUES (5, '6140b22072793_5.jpg', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAECAMAAACA5l7/AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAV1BMVEUAAAB6oZtKaWZxn5aGraUhPT9Lamk8VlYmQUIwd3hig35ihYApQD+U18lhfXpZcW6CqKAPJysvRENDX15EYWBIaGcpRkgpPj8xcG8zgH0xZWQ3enoAAACq7IQCAAAAHHRSTlMAAAAAAAAAAAAAGyQCBIOvEwNd1u5ZBUal3HoG3jmIAgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQflCBgKEBx81N/oAAAALklEQVQI12NgYGBg5OLmYWIAAWZePn4BFhCLVVBIWESUjR3I5BATl5CUkuZkAAAXPQF7p/dzxAAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMS0wOC0yNFQxMDoxNjoyOC0wNDowMGt2sFYAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjEtMDgtMjRUMTA6MTY6MjgtMDQ6MDAaKwjqAAAAAElFTkSuQmCC', '2021-09-14 14:30:56');");
+        /* </---------- MEDIA-OBJECTS ----------> */
 
         /* <---------- USERS ----------> */
         $this->addSql("INSERT INTO blogapi.user (id, login, roles, password) VALUES (1, 'root', '[\"ROLE_USER\", \"ROLE_ADMIN\"]', '$2y$13\$KIdJNBjRLeGxci8qRQmBWOqUKdrjqIyyEzNrfNzT9wP6RB0fLVg7G')");
@@ -45,6 +54,7 @@ class Version21210101010101 extends AbstractMigration
         /* <---------- GAMES ----------> */
         for ($i = 1; $i <= $gamesCount; $i++) {
             $weight = rand(0, 200);
+            $imageId = rand(1, $maxImageId);
             $this->addSql(
                 "INSERT INTO blogapi.game
                     (id, image_id, name, slug, weight, title, description, og_title, og_description, key_words) VALUES
@@ -73,6 +83,8 @@ class Version21210101010101 extends AbstractMigration
             $date = $date->modify("+1 min");
             $gameId = rand(1, $gamesCount);
             $articlesGame["{$i}"] = $gameId;
+            $imageId = rand(1, $maxImageId);
+            $previewImageId = rand(1, $maxImageId);
 
             $sentences = [
                 'The rivers served as passageways for explorers and traders over the following two centuries.\r\n',
