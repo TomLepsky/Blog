@@ -100,7 +100,7 @@ jobs:
 
       - name: Устанавливаем\обновляем секреты для подключения к S3
         run: |
-          kubectl create -n wowvendor-core-dev-$(echo ${{ env.feature_branch }}) secret generic s3 \
+          kubectl create -n blog-frontend secret generic s3 \
           --from-literal=ACCESS_KEY='${{ secrets.S3_TOKEN }}' \
           --from-literal=SECRET_KEY='${{ secrets.S3_SECRET }}' \
           -o yaml --dry-run | kubectl apply -f - 
