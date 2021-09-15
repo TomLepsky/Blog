@@ -48,4 +48,4 @@ const apiDocumentationParser = async (entrypoint) => {
   }
 };
 
-export const dataProvider = baseHydraDataProvider(`${API_ENTRYPOINT}`, fetchHydra, apiDocumentationParser, true);
+export const dataProvider = baseHydraDataProvider(`${API_ENTRYPOINT}`, fetchHydra, apiDocumentationParser);
