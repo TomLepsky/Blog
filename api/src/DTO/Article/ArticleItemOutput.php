@@ -34,22 +34,22 @@ class ArticleItemOutput
     /**
      * @Groups({"articleItem:read"})
      */
-    public ?Collection $tags;
+    public ?Collection $tags = null;
 
     /**
      * @Groups({"articleItem:read"})
      */
-    public ?MediaObject $previewImage;
+    public ?MediaObject $previewImage = null;
 
     /**
      * @Groups({"articleItem:read"})
      */
-    public ?MediaObject $detailImage;
+    public ?MediaObject $detailImage = null;
 
     /**
      * @Groups({"articleItem:read"})
      */
-    public ?Game $game;
+    public ?Game $game = null;
 
     /**
      * @Groups({"articleItem:read"})
@@ -64,7 +64,7 @@ class ArticleItemOutput
     /**
      * @Groups({"articleItem:read"})
      */
-    public ?string $mappedCreatedAt;
+    public ?string $mappedCreatedAt = null;
 
     /**
      * @Groups({"articleItem:read"})

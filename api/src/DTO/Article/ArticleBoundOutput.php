@@ -31,15 +31,15 @@ class ArticleBoundOutput
     /**
      * @Groups({"articleItem:read"})
      */
-    public ?MediaObject $previewImage;
+    public ?MediaObject $previewImage = null;
 
     /**
      * @Groups({"articleItem:read"})
      */
-    public ?DateTimeInterface $createdAt;
+    public ?DateTimeInterface $createdAt = null;
 
     /**
      * @Groups({"articleItem:read"})
      */
-    public ?string $mappedCreatedAt;
+    public ?string $mappedCreatedAt = null;
 }

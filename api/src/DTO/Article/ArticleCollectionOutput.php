@@ -26,7 +26,7 @@ class ArticleCollectionOutput
     /**
      * @Groups({"articleCollection:read"})
      */
-    public ?Game $game;
+    public ?Game $game = null;
 
     /**
      * @Groups({"articleCollection:read"})
@@ -36,10 +36,10 @@ class ArticleCollectionOutput
     /**
      * @Groups({"articleCollection:read"})
      */
-    public ?DateTimeInterface $createdAt;
+    public ?DateTimeInterface $createdAt = null;
 
     /**
      * @Groups({"articleCollection:read"})
      */
-    public ?string $formattedCreatedAt;
+    public ?string $formattedCreatedAt = null;
 }

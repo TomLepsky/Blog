@@ -31,10 +31,10 @@ class TagOutput
     /**
      * @Groups({"tagItem:read", "tagCollection:read"})
      */
-    public ?Game $game;
+    public ?Game $game = null;
 
     /**
      * @Groups({"tagItem:read"})
      */
-    public ?MetaInformation $meta;
+    public ?MetaInformation $meta = null;
 }
