@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 class ApiResponseSubscriber implements EventSubscriberInterface
@@ -158,6 +159,7 @@ class ApiResponseSubscriber implements EventSubscriberInterface
                     ]
                 );
                 break;
+            case $exception instanceof AuthenticationException:
             case $exception instanceof AccessDeniedException:
                 $response->setStatusCode(401);
                 $response->setData(
