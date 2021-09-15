@@ -196,6 +196,7 @@ class Article
      *     inverseJoinColumns = {@ORM\JoinColumn(name = "article_target", referencedColumnName = "id")}
      * )
      * @MaxDepth(1)
+     * @Groups({"articleItem:write"})
      */
     #[ApiProperty(
         readableLink: true,
@@ -206,7 +207,6 @@ class Article
     /**
      * @ORM\ManyToMany(targetEntity=self::class, mappedBy="children")
      * @MaxDepth(1)
-     * @Groups({"articleItem:read", "article:write"})
      */
     #[ApiProperty(
         readableLink: true,

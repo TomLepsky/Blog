@@ -80,7 +80,7 @@ class MediaObject
     private int $id;
 
     /**
-     * @Vich\UploadableField(mapping="media_object", fileNameProperty="fileName")
+     * @Vich\UploadableField(mapping="media_object", fileNameProperty="fileName", originalName="name")
      * @Assert\NotNull(groups={"mediaObject:create"})
      */
     private ?File $file;
@@ -95,6 +95,12 @@ class MediaObject
      * )
      */
     private ?string $fileName = null;
+
+    /**
+     * @ORM\Column(type="string")
+     * @Groups({"mediaObject:read"})
+     */
+    private ?string $name;
 
     /**
      * @Groups({"mediaObject:read", "gameItem:read", "gameCollection:read"})
@@ -202,5 +208,21 @@ class MediaObject
             'image/tiff',
             'image/webp'
         ];
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string|null $name
+     */
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
     }
 }

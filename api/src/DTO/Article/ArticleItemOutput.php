@@ -49,11 +49,6 @@ class ArticleItemOutput
     /**
      * @Groups({"articleItem:read"})
      */
-    public ?Collection $relative;
-
-    /**
-     * @Groups({"articleItem:read"})
-     */
     public ?Game $game;
 
     /**
