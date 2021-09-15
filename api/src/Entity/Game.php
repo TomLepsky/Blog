@@ -379,4 +379,9 @@ class Game
     {
         $this->keyWords = $keyWords;
     }
+
+    public function __toString(): string
+    {
+        return $this->getName();
+    }
 }

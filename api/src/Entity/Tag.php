@@ -261,4 +261,9 @@ class Tag
     {
         $this->articlesQuantity = $articlesQuantity;
     }
+
+    public function __toString(): string
+    {
+        return $this->getName();
+    }
 }

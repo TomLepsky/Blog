@@ -509,4 +509,9 @@ class Article
     {
         $this->keyWords = $keyWords;
     }
+
+    public function __toString(): string
+    {
+        return $this->getHeader();
+    }
 }
