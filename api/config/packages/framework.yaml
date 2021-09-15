@@ -12,8 +12,8 @@ framework:
         enabled: true
         handler_id: ~
         cookie_secure: auto
-        cookie_samesite: lax
-        cookie_httponly: true
+        cookie_samesite: none
+        cookie_httponly: false
         
     #esi: true
     #fragments: true
