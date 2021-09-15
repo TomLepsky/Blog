@@ -13,7 +13,7 @@ framework:
         handler_id: ~
         cookie_secure: auto
         cookie_samesite: none
-        cookie_httponly: false
+        cookie_httponly: true
         
     #esi: true
     #fragments: true
