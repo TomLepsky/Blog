@@ -1,5 +1,4 @@
 import dynamic from 'next/dynamic';
-import {Props} from "react";
 
 export const RichTextEditorWrapper = dynamic(
   import('ra-input-rich-text'),

@@ -2,7 +2,8 @@ import {
   CreateGuesser,
   ListGuesser,
   EditGuesser,
-  FieldGuesser
+  FieldGuesser,
+  InputGuesser
 } from "@api-platform/admin";
 
 import { FileField, FileInput } from "react-admin";
@@ -14,11 +15,7 @@ const DefaultSuite = (Guesser, props) => {
       <FileInput source="file">
         <FileField source="src" title="title"/>
       </FileInput>
-      <FieldGuesser source={"fileName"} addLabel={true} />
-      <FieldGuesser source={"name"} addLabel={true} />
-      <FieldGuesser source={"original"} addLabel={true} />
-      <FieldGuesser source={"placeholder"} addLabel={true} />
-      <FieldGuesser source={"updatedAt"} addLabel={true} />
+      <InputGuesser source={"fileName"} addLabel={true} />
     </Guesser>
   )
 }

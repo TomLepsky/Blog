@@ -7,7 +7,9 @@ import {
   InputGuesser
 } from "@api-platform/admin";
 
-import {TextInput} from 'react-admin';
+import { ReferenceInput } from "react-admin";
+
+import {TextInput, AutocompleteArrayInput} from 'react-admin';
 
 const DefaultSuite = (Guesser, props) => {
   return (
@@ -20,7 +22,9 @@ const DefaultSuite = (Guesser, props) => {
       <TextInput multiline={true} source={"ogTitle"}/>
       <TextInput multiline={true} source={"ogDescription"}/>
       <TextInput multiline={true} source={"keyWords"}/>
-      <InputGuesser source={"tags"}/>
+      <ReferenceInput label="Tags" source="tags" reference="articles">
+        <AutocompleteArrayInput source="name" />
+      </ReferenceInput>
     </Guesser>
   )
 };
