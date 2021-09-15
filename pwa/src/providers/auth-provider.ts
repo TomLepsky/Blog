@@ -2,7 +2,7 @@ import {API_ENTRYPOINT} from "../../config/entrypoint";
 
 export const authProvider = {
   login: ({username, password}) => {
-    const request = new Request(`${API_ENTRYPOINT}/api/login`, {
+    const request = new Request(`${API_ENTRYPOINT}/login`, {
       method: 'POST',
       body: JSON.stringify({login: username, password}),
       headers: new Headers({'Content-Type': 'application/json'}),
