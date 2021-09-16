@@ -177,14 +177,14 @@ class Article
     /**
      * @ORM\OneToOne(targetEntity=MediaObject::class)
      * @ORM\JoinColumn(name="preview_image_id", referencedColumnName="id")
-     * @Groups({"articleItem:read", "articleCollection:read"})
+     * @Groups({"articleItem:read", "articleCollection:read", "article:write"})
      */
     private ?MediaObject $previewImage;
 
     /**
      * @ORM\OneToOne(targetEntity=MediaObject::class)
      * @ORM\JoinColumn(name="detail_image_id", referencedColumnName="id")
-     * @Groups({"articleItem:read", "articleCollection:read"})
+     * @Groups({"articleItem:read", "articleCollection:read", "article:write"})
      */
     private ?MediaObject $detailImage;
 
@@ -196,7 +196,7 @@ class Article
      *     inverseJoinColumns = {@ORM\JoinColumn(name = "article_target", referencedColumnName = "id")}
      * )
      * @MaxDepth(1)
-     * @Groups({"articleItem:write"})
+     * @Groups({"articleItem:read", "articleItem:write"})
      */
     #[ApiProperty(
         readableLink: true,

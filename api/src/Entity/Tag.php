@@ -88,7 +88,7 @@ class Tag
     private string $slug;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="integer")
      * @Groups({"tagItem:read", "tagCollection:read"})
      */
     private ?int $articlesQuantity = 0;

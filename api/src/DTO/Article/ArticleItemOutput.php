@@ -12,27 +12,27 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class ArticleItemOutput
 {
     /**
-     * @Groups({"articleItem:read"})
+     * @Groups({"articleItem:read", "article:write"})
      */
     public int $id;
 
     /**
-     * @Groups({"articleItem:read"})
+     * @Groups({"articleItem:read", "article:write"})
      */
     public string $header;
 
     /**
-     * @Groups({"articleItem:read"})
+     * @Groups({"articleItem:read", "article:write"})
      */
     public ?string $content;
 
     /**
-     * @Groups({"articleItem:read"})
+     * @Groups({"articleItem:read", "article:write"})
      */
     public string $slug;
 
     /**
-     * @Groups({"articleItem:read"})
+     * @Groups({"articleItem:read", "article:write"})
      */
     public ?Collection $tags = null;
 
@@ -42,42 +42,42 @@ class ArticleItemOutput
     public ?MediaObject $previewImage = null;
 
     /**
-     * @Groups({"articleItem:read"})
+     * @Groups({"articleItem:read", "article:write"})
      */
     public ?MediaObject $detailImage = null;
 
     /**
-     * @Groups({"articleItem:read"})
+     * @Groups({"articleItem:read", "article:write"})
      */
     public ?Game $game = null;
 
     /**
-     * @Groups({"articleItem:read"})
+     * @Groups({"articleItem:read", "article:write"})
      */
     public int $timeToRead;
 
     /**
-     * @Groups({"articleItem:read"})
+     * @Groups({"articleItem:read", "article:write"})
      */
     public ?DateTimeInterface $createdAt;
 
     /**
-     * @Groups({"articleItem:read"})
+     * @Groups({"articleItem:read", "article:write"})
      */
     public ?string $mappedCreatedAt = null;
 
     /**
-     * @Groups({"articleItem:read"})
+     * @Groups({"articleItem:read", "article:write"})
      */
     public ?MetaInformation $meta = null;
 
     /**
-     * @Groups({"articleItem:read"})
+     * @Groups({"articleItem:read", "article:write"})
      */
     public ?ArticleBoundOutput $previousArticle = null;
 
     /**
-     * @Groups({"articleItem:read"})
+     * @Groups({"articleItem:read", "article:write"})
      */
     public ?ArticleBoundOutput $nextArticle = null;
 }
