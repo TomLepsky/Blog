@@ -24,9 +24,9 @@ class TagOutputDataTransformer implements DataTransformerInterface
         $tagOutput->articlesQuantity = $object->getArticlesQuantity();
         $tagOutput->game = $object->getGame();
 
-        if ($object->getTitle() !== null &&
-            $object->getDescription() !== null &&
-            $object->getOgTitle() !== null &&
+        if ($object->getTitle() !== null ||
+            $object->getDescription() !== null ||
+            $object->getOgTitle() !== null ||
             $object->getOgDescription() !== null) {
 
             $tagOutput->meta = $this->setMetaInformation($object);

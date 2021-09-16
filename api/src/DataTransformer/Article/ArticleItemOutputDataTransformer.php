@@ -34,9 +34,9 @@ class ArticleItemOutputDataTransformer implements DataTransformerInterface
         $articleOutput->game = $object->getGame();
         $articleOutput->timeToRead = $object->getTimeToRead();
 
-        if ($object->getTitle() !== null &&
-            $object->getDescription() !== null &&
-            $object->getOgTitle() !== null &&
+        if ($object->getTitle() !== null ||
+            $object->getDescription() !== null ||
+            $object->getOgTitle() !== null ||
             $object->getOgDescription() !== null) {
 
             $meta = new MetaInformation();
