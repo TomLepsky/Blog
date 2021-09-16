@@ -30,7 +30,8 @@ class MediaObjectNormalizer implements ContextAwareNormalizerInterface, Normaliz
     {
         $context[self::ALREADY_CALLED] = true;
 
-        $object->setOriginal("https://{$_SERVER['SERVER_NAME']}{$this->storage->resolveUri($object, 'file')}");
+        $storageHost = getenv('REMOTE_MEDIA_OBJECT_STORAGE_HOST') ?? "https://{$_SERVER['SERVER_NAME']}";
+        $object->setOriginal("$storageHost{$this->storage->resolveUri($object, 'file')}");
 
         return $this->normalizer->normalize($object, $format, $context);
     }

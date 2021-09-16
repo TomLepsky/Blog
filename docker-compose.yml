@@ -20,6 +20,7 @@ services:
       - URI_GET_BY_TOKEN=users/get-by-token
       - URI_LOGIN=authenticate
       - REFRESH_TOKEN=refresh-token
+      - REMOTE_MEDIA_OBJECT_STORAGE_HOST=https://blog.wowvendor.com/
 
   pwa:
     build:
