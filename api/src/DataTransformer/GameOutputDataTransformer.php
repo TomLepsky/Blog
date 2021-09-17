@@ -3,9 +3,9 @@
 namespace App\DataTransformer;
 
 use ApiPlatform\Core\DataTransformer\DataTransformerInterface;
+use App\DataMapper\MetaInformationMapper;
 use App\DTO\GameOutput;
 use App\Entity\Game;
-use App\Embeddable\MetaInformation;
 use App\Repository\ArticleRepository;
 
 class GameOutputDataTransformer implements DataTransformerInterface
@@ -27,13 +27,13 @@ class GameOutputDataTransformer implements DataTransformerInterface
         $gameOutput->articlesCount = $this->articleRepository->getQuantity($object->getId());
         $gameOutput->image = $object->getImage();
 
-        $meta = new MetaInformation();
-        $meta->setTitle($object->getTitle());
-        $meta->setDescription($object->getDescription());
-        $meta->setOgTitle($object->getOgTitle());
-        $meta->setOgDescription($object->getOgDescription());
-        $meta->setKeyWords($object->getKeyWords());
-        $gameOutput->meta = $meta;
+        if ($object->getTitle() !== null ||
+            $object->getDescription() !== null ||
+            $object->getOgTitle() !== null ||
+            $object->getOgDescription() !== null) {
+
+            $gameOutput->meta = MetaInformationMapper::setMetaInformationFromEntity($object);
+        }
 
         return $gameOutput;
     }

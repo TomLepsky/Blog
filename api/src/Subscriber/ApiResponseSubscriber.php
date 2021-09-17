@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 class ApiResponseSubscriber implements EventSubscriberInterface
 {
-    private int $totalItems;
+    private ?int $totalItems = null;
 
     private array $excludedRoutes = [
         'api_entrypoint',
@@ -50,7 +50,6 @@ class ApiResponseSubscriber implements EventSubscriberInterface
         $context = $event->getRequest()->attributes->get('_api_normalization_context');
         $route = $event->getRequest()->attributes->get('_route');
         $acceptFormat = $event->getRequest()->headers->get('accept-format');
-
         if (!in_array($route, $this->excludedRoutes) && $acceptFormat === 'wv.api+json') {
             $responseObject = $event->getResponse();
             $statusCode = $responseObject->getStatusCode();
@@ -60,7 +59,7 @@ class ApiResponseSubscriber implements EventSubscriberInterface
                     'status' => $statusCode,
                     'data' => $content
                 ];
-                if ('collection' === $context['operation_type'] && 'get' === $context['collection_operation_name']) {
+                if ('collection' === $context['operation_type'] && $this->totalItems !== null) {
                     $response['meta']['total'] = $this->totalItems;
                 }
 

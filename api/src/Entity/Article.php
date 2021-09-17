@@ -6,6 +6,8 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Config;
+use App\Controller\ArticleController\GetArticleItem;
 use App\Controller\ArticleController\GetPopularArticles;
 use App\Controller\ArticleController\GetRelatedArticles;
 use App\Controller\ArticleController\SearchArticlesAction;
@@ -34,6 +36,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     collectionOperations: [
         'get' => [
+            'method' => 'get',
+            'path' => '/articles',
+            'order' => ['createdAt' => 'DESC'],
+            'normalization_context' => [
+                'groups' => ['articleCollection:read'],
+            ],
+        ],
+        Config::API_BLOG_NAMESPACE . '_articles_get' => [
+            'method' => 'get',
+            'path' => '/' . Config::API_BLOG_NAMESPACE . '/articles',
             'normalization_context' => [
                 'groups' => ['articleCollection:read'],
                 'skip_null_values' => true
@@ -41,9 +53,9 @@ use Symfony\Component\Validator\Constraints as Assert;
             'order' => ['createdAt' => 'DESC'],
             'output' => ArticleCollectionOutput::class,
         ],
-        'articles_popular' => [
+        Config::API_BLOG_NAMESPACE . '_articles_popular' => [
             'method' => 'get',
-            'path' => '/articles/popular',
+            'path' => '/' . Config::API_BLOG_NAMESPACE . '/articles/popular',
             'controller' => GetPopularArticles::class,
             'normalization_context' => [
                 'groups' => ['articleCollection:read'],
@@ -51,9 +63,9 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             'output' => ArticleCollectionOutput::class,
         ],
-        'articles_search' => [
+        Config::API_BLOG_NAMESPACE . '_articles_search' => [
             'method' => 'get',
-            'path' => '/articles/search',
+            'path' => '/' . Config::API_BLOG_NAMESPACE . '/articles/search',
             'controller' => SearchArticlesAction::class,
             'normalization_context' => [
                 'groups' => ['articleCollection:read'],
@@ -62,9 +74,9 @@ use Symfony\Component\Validator\Constraints as Assert;
             'read' => false,
             'output' => ArticleCollectionOutput::class,
         ],
-        'articles_related' => [
+        Config::API_BLOG_NAMESPACE . '_articles_related' => [
             'method' => 'get',
-            'path' => '/articles/related/{slug}',
+            'path' => '/' . Config::API_BLOG_NAMESPACE . '/articles/related/{slug}',
             'controller' => GetRelatedArticles::class,
             'normalization_context' => [
                 'groups' => ['articleCollection:read'],
@@ -79,10 +91,21 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     itemOperations: [
         'get' => [
+            'method' => 'get',
+            'path' => '/articles/{slug}',
+            'normalization_context' => [
+                'groups' => ['articleItem:read'],
+            ],
+        ],
+        Config::API_BLOG_NAMESPACE . '_article_get' => [
+            'method' => 'get',
+            'path' => '/' . Config::API_BLOG_NAMESPACE . '/articles/{gameSlug}/{articleSlug}',
+            'controller' => GetArticleItem::class,
             'normalization_context' => [
                 'groups' => ['articleItem:read'],
                 'skip_null_values' => true
             ],
+            'read' => false,
             'output' => ArticleItemOutput::class,
         ],
         'put' => [
@@ -120,7 +143,7 @@ class Article
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"articleItem:read", "article:write"})
+     * @Groups({"articleItem:read", "articleCollection:read", "article:write"})
      * @Assert\NotBlank()
      */
     private ?string $content;
@@ -140,37 +163,37 @@ class Article
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"articleItem:read", "article:write"})
+     * @Groups({"articleItem:read", "articleCollection:read", "article:write"})
      */
     private ?string $title;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"articleItem:read", "article:write"})
+     * @Groups({"articleItem:read", "articleCollection:read", "article:write"})
      */
     private ?string $description;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"articleItem:read", "article:write"})
+     * @Groups({"articleItem:read", "articleCollection:read", "article:write"})
      */
     private ?string $ogTitle;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"articleItem:read", "article:write"})
+     * @Groups({"articleItem:read", "articleCollection:read", "article:write"})
      */
     private ?string $ogDescription;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"articleItem:read", "article:write"})
+     * @Groups({"articleItem:read", "articleCollection:read", "article:write"})
      */
     private ?string $keyWords;
 
     /**
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="articles")
-     * @Groups({"articleItem:read", "article:write"})
+     * @Groups({"articleItem:read", "articleCollection:read", "article:write"})
      */
     private ?Collection $tags;
 

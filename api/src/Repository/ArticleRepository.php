@@ -166,4 +166,20 @@ class ArticleRepository extends ServiceEntityRepository
             )
         );
     }
+
+    public function getArticleItem(string $articleSlug, ?string $gameSlug = null) : ?Article
+    {
+        $queryBuilder = $this->createQueryBuilder('a');
+        if ($gameSlug !== null) {
+            $queryBuilder
+                ->innerJoin(Game::class, 'g', 'WITH', 'a.game = g.id')
+                ->andWhere('g.slug = :gameSlug')
+                ->setParameter('gameSlug', $gameSlug);
+        }
+        $queryBuilder
+            ->andWhere('a.slug = :articleSlug')
+            ->setParameter('articleSlug', $articleSlug);
+
+        return $queryBuilder->getQuery()->getOneOrNullResult();
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiProperty;
+use App\Config;
 use App\DTO\GameOutput;
 use App\Repository\GameRepository;
 use App\Security\Voter\VoterAttribute;
@@ -26,6 +27,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         'get' => [
             "normalization_context" => [
                 "groups" => ["gameCollection:read"],
+            ],
+        ],
+        Config::API_BLOG_NAMESPACE . '_games_get' => [
+            'method' => 'get',
+            'path' => '/' . Config::API_BLOG_NAMESPACE . '/games',
+            "normalization_context" => [
+                "groups" => ["gameCollection:read"],
                 'skip_null_values' => true
             ],
             'output' => GameOutput::class
@@ -38,17 +46,16 @@ use Symfony\Component\Validator\Constraints as Assert;
         'get' => [
             "normalization_context" => [
                 "groups" => ["gameItem:read"],
-                'skip_null_values' => true
             ],
-            'output' => GameOutput::class
         ],
-        'get_admin' => [
+        Config::API_BLOG_NAMESPACE . '_game_get' => [
             'method' => 'get',
-            'path' => '/game-admin/{id}',
+            'path' => '/' . Config::API_BLOG_NAMESPACE . '/games/{slug}',
             "normalization_context" => [
                 "groups" => ["gameItem:read"],
                 'skip_null_values' => true
             ],
+            'output' => GameOutput::class
         ],
         'put' => [
             "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"
@@ -97,11 +104,6 @@ class Game
      * @Groups({"game:write"})
      */
     private int $weight = 100;
-
-    /**
-     * @Groups({"gameItem:read", "gameCollection:read"})
-     */
-    private int $articlesCount = 0;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -318,16 +320,6 @@ class Game
     public function setImage(?MediaObject $image): void
     {
         $this->image = $image;
-    }
-
-    public function getArticlesCount(): int
-    {
-        return $this->articlesCount;
-    }
-
-    public function setArticlesCount(int $articlesCount): void
-    {
-        $this->articlesCount = $articlesCount;
     }
 
     public function getTitle(): ?string

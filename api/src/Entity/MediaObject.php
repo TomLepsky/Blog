@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Config;
 use App\Controller\CreateMediaObjectAction;
 use App\Repository\MediaObjectRepository;
 use App\Security\Voter\VoterAttribute;
@@ -25,6 +26,10 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'get' => [
             'method' => 'get',
             'path' => '/media-objects',
+        ],
+        Config::API_BLOG_NAMESPACE . '_mediaobjects_get' => [
+            'method' => 'get',
+            'path' => '/' . Config::API_BLOG_NAMESPACE . '/media-objects',
         ],
         'post' => [
             'method' => 'post',
@@ -55,6 +60,10 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         'get' => [
             'method' => 'get',
             'path' => '/media-objects/{id}',
+        ],
+        Config::API_BLOG_NAMESPACE . '_mediaobject_get' => [
+            'method' => 'get',
+            'path' => '/' . Config::API_BLOG_NAMESPACE . '/media-objects/{id}',
         ],
         'delete' => [
             'method' => 'delete',

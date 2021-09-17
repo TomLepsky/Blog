@@ -3,8 +3,8 @@
 namespace App\DataTransformer;
 
 use ApiPlatform\Core\DataTransformer\DataTransformerInterface;
+use App\DataMapper\MetaInformationMapper;
 use App\DTO\TagOutput;
-use App\Embeddable\MetaInformation;
 use App\Entity\Tag;
 
 class TagOutputDataTransformer implements DataTransformerInterface
@@ -29,7 +29,7 @@ class TagOutputDataTransformer implements DataTransformerInterface
             $object->getOgTitle() !== null ||
             $object->getOgDescription() !== null) {
 
-            $tagOutput->meta = $this->setMetaInformation($object);
+            $tagOutput->meta = MetaInformationMapper::setMetaInformationFromEntity($object);
         }
 
         return $tagOutput;
@@ -38,16 +38,5 @@ class TagOutputDataTransformer implements DataTransformerInterface
     public function supportsTransformation($data, string $to, array $context = []): bool
     {
         return TagOutput::class === $to && $data instanceof Tag;
-    }
-
-    private function setMetaInformation(Tag $object) : MetaInformation
-    {
-        $meta = new MetaInformation();
-        $meta->setTitle($object->getTitle());
-        $meta->setDescription($object->getDescription());
-        $meta->setOgTitle($object->getOgTitle());
-        $meta->setOgDescription($object->getOgDescription());
-        $meta->setKeyWords($object->getKeyWords());
-        return $meta;
     }
 }

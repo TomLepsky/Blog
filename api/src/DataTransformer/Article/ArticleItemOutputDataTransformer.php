@@ -4,12 +4,11 @@ namespace App\DataTransformer\Article;
 
 use ApiPlatform\Core\DataTransformer\DataTransformerInterface;
 use App\DataMapper\DateMapper;
+use App\DataMapper\MetaInformationMapper;
 use App\DTO\Article\ArticleBoundOutput;
 use App\DTO\Article\ArticleItemOutput;
 use App\Entity\Article;
-use App\Embeddable\MetaInformation;
 use App\Repository\ArticleRepository;
-use Doctrine\Common\Util\Debug;
 
 class ArticleItemOutputDataTransformer implements DataTransformerInterface
 {
@@ -39,14 +38,7 @@ class ArticleItemOutputDataTransformer implements DataTransformerInterface
             $object->getOgTitle() !== null ||
             $object->getOgDescription() !== null) {
 
-            $meta = new MetaInformation();
-            $meta->setTitle($object->getTitle());
-            $meta->setDescription($object->getDescription());
-            $meta->setOgTitle($object->getOgTitle());
-            $meta->setOgDescription($object->getOgDescription());
-            $meta->setKeyWords($object->getKeyWords());
-
-            $articleOutput->meta = $meta;
+            $articleOutput->meta = MetaInformationMapper::setMetaInformationFromEntity($object);
         }
 
         $articleOutput->createdAt = $object->getCreatedAt();

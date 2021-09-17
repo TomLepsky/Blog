@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Config;
 use App\DTO\TagOutput;
 use App\Embeddable\MetaInformation;
 use App\Repository\TagRepository;
@@ -29,6 +30,13 @@ use App\Security\Voter\VoterAttribute;
         'get' => [
             'normalization_context' => [
                 'groups' => ['tagCollection:read'],
+            ],
+        ],
+        Config::API_BLOG_NAMESPACE . '_tags_get' => [
+            'method' => 'get',
+            'path' => '/'. Config::API_BLOG_NAMESPACE . '/tags',
+            'normalization_context' => [
+                'groups' => ['tagCollection:read'],
                 'skip_null_values' => true
             ],
         ],
@@ -38,6 +46,13 @@ use App\Security\Voter\VoterAttribute;
     ],
     itemOperations: [
         'get' => [
+            'normalization_context' => [
+                'groups' => ['tagItem:read'],
+            ]
+        ],
+        Config::API_BLOG_NAMESPACE . '_tag_get' => [
+            'method' => 'get',
+            'path' => '/' . Config::API_BLOG_NAMESPACE . '/tags/{slug}',
             'normalization_context' => [
                 'groups' => ['tagItem:read'],
                 'skip_null_values' => true
