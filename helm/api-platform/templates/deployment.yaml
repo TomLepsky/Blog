@@ -81,7 +81,7 @@ spec:
           imagePullPolicy: {{ .Values.php.image.pullPolicy }}
           env:
             - name: "REMOTE_MEDIA_OBJECT_STORAGE_HOST"
-              value: "https://blog.wowvendor.com/"
+              value: "https://blog.wowvendor.com"
             - name: TRUSTED_HOSTS
               valueFrom:
                 configMapKeyRef:
