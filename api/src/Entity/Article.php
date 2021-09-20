@@ -8,6 +8,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Config;
 use App\Controller\ArticleController\GetArticleItem;
+use App\Controller\ArticleController\GetArticleQuantityByFilters;
 use App\Controller\ArticleController\GetMainPageArticles;
 use App\Controller\ArticleController\GetPopularArticles;
 use App\Controller\ArticleController\GetRelatedArticles;
@@ -72,6 +73,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'groups' => ['articleCollection:read'],
                 'skip_null_values' => true
             ],
+            'read' => false,
             'output' => ArticleCollectionOutput::class,
         ],
         Config::API_BLOG_NAMESPACE . '_articles_search' => [
@@ -118,6 +120,12 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             'read' => false,
             'output' => ArticleItemOutput::class,
+        ],
+        Config::API_BLOG_NAMESPACE . '_article_quantity_by_filters' => [
+            'method' => 'get',
+            'path' => '/' . Config::API_BLOG_NAMESPACE . '/articles/quantity-by-filters',
+            'controller' => GetArticleQuantityByFilters::class,
+            'read' => false,
         ],
         'put' => [
             "security" => "is_granted('" . VoterAttribute::EDIT . "', object)"

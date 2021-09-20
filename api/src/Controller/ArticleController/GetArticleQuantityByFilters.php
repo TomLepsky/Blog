@@ -2,26 +2,23 @@
 
 namespace App\Controller\ArticleController;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Paginator;
-use App\Config;
 use App\Entity\Article;
 use App\Repository\ArticleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
-class SearchArticlesAction extends AbstractController
+class GetArticleQuantityByFilters extends AbstractController
 {
     /**
      * @param Request $request
-     * @return Paginator
+     * @return Collection<string, int>
      */
-    public function __invoke(Request $request) : Paginator
+    public function __invoke(Request $request) : Collection
     {
-        $page = (int) $request->query->get('page', Config::DEFAULT_FIRST_PAGE);
-        $pageSize = (int) $request->query->get('pageSize', Config::DEFAULT_PAGE_SIZE);
-        $pageSize = $pageSize > Config::MAX_PAGE_SIZE ? Config::MAX_PAGE_SIZE : $pageSize;
         $queryParameters = $request->query->all();
         foreach (array_keys($queryParameters) as $queryKey) {
             if (!in_array($queryKey, ArticleRepository::VALID_FILTER_PARAMETERS)) {
@@ -31,6 +28,9 @@ class SearchArticlesAction extends AbstractController
 
         /** @var ArticleRepository $repository */
         $repository = $this->getDoctrine()->getRepository(Article::class);
-        return $repository->search($queryParameters, $page, $pageSize);
+
+        return new ArrayCollection([
+            "total" => empty($queryParameters) ? 0 : $repository->getQuantityByFilters($queryParameters)
+        ]);
     }
 }

@@ -7,6 +7,7 @@ use App\Entity\Article;
 use App\Entity\Game;
 use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -25,7 +26,7 @@ class ArticleRepository extends ServiceEntityRepository
     public const GAME_SLUG = 'game_slug';
     public const HEADER = 'header';
 
-    public const VALID_QUERY_PARAMETERS = [
+    public const VALID_FILTER_PARAMETERS = [
         self::TAGS_SLUG,
         self::GAME_SLUG,
         self::HEADER
@@ -120,6 +121,59 @@ class ArticleRepository extends ServiceEntityRepository
         return !empty($result) ? $result[0] : null;
     }
 
+    public function getWhereClauseForSearch(array $parameters, bool $and = true) : array
+    {
+        $bindParameters = [];
+        $whereClause = [];
+        foreach ($parameters as $key => $value) {
+            switch ($key) {
+                case self::TAGS_SLUG:
+                    if (!is_array($value)) {
+                        $value = [$value];
+                    }
+
+                    $nestedWhereClause = [];
+                    $count = count($value);
+                    for ($i = 0; $i < $count; $i++) {
+                        $bind = "tag_slug_{$i}";
+                        $nestedWhereClause[] = "t2.slug = :{$bind}";
+                        $bindParameters[$bind] = $value[$i];
+                    }
+
+                    $clause = implode(" OR ", $nestedWhereClause);
+                    $whereClause[self::TAGS_SLUG] = "
+                            a.id IN (SELECT a2.id FROM App\Entity\Article a2
+                                    JOIN a2.tags t2
+                                WHERE {$clause}
+                                GROUP BY a2.id
+                        ";
+                    if ($and) {
+                        $whereClause[self::TAGS_SLUG] .= " HAVING count(a2.id) = {$count}";
+                    }
+                    $whereClause[self::TAGS_SLUG] .= ")";
+                    break;
+
+                case self::GAME_SLUG:
+                    $bind = "game_slug";
+                    $whereClause[self::GAME_SLUG] = "g.slug = :{$bind}";
+                    $bindParameters[$bind] = $value;
+                    break;
+
+                case self::HEADER:
+                    if (strlen($value) < 4) {
+                        break;
+                    }
+                    $bind = "header";
+                    $whereClause[self::HEADER] = "a.header LIKE :{$bind}";
+                    $bindParameters[$bind] = "%{$value}%";
+                    break;
+            }
+        }
+
+        $whereClause = implode(" AND ", $whereClause);
+        return [$whereClause, $bindParameters];
+    }
+
     /**
      * @param array $parameters
      * @param int $page
@@ -129,57 +183,11 @@ class ArticleRepository extends ServiceEntityRepository
     public function search(array $parameters = [], int $page = 1, int $pageSize = 10) : Paginator
     {
         $query = "
-            SELECT a FROM App\Entity\Article a
-                JOIN a.tags t
-                JOIN a.game g
-        ";
+            SELECT DISTINCT a FROM App\Entity\Article a JOIN a.game g ";
 
         $bindParameters = [];
         if (!empty($parameters)) {
-            $whereClause = [];
-            foreach ($parameters as $key => $value) {
-                switch ($key) {
-                    case self::TAGS_SLUG:
-                        if (!is_array($value)) {
-                            $value = [$value];
-                        }
-
-                        $nestedWhereClause = [];
-                        $count = count($value);
-                        for ($i = 0; $i < $count; $i++) {
-                            $bind = "tag_slug_{$i}";
-                            $nestedWhereClause[] = "t2.slug = :{$bind}";
-                            $bindParameters[$bind] = $value[$i];
-                        }
-
-                        $clause = implode(" OR ", $nestedWhereClause);
-                        $whereClause[self::TAGS_SLUG] = "
-                            a.id IN (SELECT a2.id FROM App\Entity\Article a2
-                                    JOIN a2.tags t2
-                                WHERE {$clause}
-                                GROUP BY a2.id
-                                HAVING count(a2.id) = {$count})
-                        ";
-                        break;
-
-                    case self::GAME_SLUG:
-                        $bind = "game_slug";
-                        $whereClause[self::GAME_SLUG] = "g.slug = :{$bind}";
-                        $bindParameters[$bind] = $value;
-                        break;
-
-                    case self::HEADER:
-                        if (strlen($value) < 4) {
-                            break;
-                        }
-                        $bind = "header";
-                        $whereClause[self::HEADER] = "a.header LIKE :{$bind}";
-                        $bindParameters[$bind] = "%{$value}%";
-                        break;
-                }
-            }
-
-            $whereClause = implode(" AND ", $whereClause);
+            [$whereClause, $bindParameters] = $this->getWhereClauseForSearch($parameters);
             $query .= "WHERE {$whereClause}";
         }
 
@@ -195,6 +203,12 @@ class ArticleRepository extends ServiceEntityRepository
         );
     }
 
+    /**
+     * @param string $articleSlug
+     * @param string|null $gameSlug
+     * @return Article|null
+     * @throws NonUniqueResultException
+     */
     public function getArticleItem(string $articleSlug, ?string $gameSlug = null) : ?Article
     {
         $queryBuilder = $this->createQueryBuilder('a');
@@ -211,8 +225,27 @@ class ArticleRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
-    public function getRelatedArticles(string $articleSlug, ?string $gameSlug = null) : Paginator
+    public function getQuantityByFilters(array $filters) : int
+    {
+        $query = "
+            SELECT count(a.id) FROM App\Entity\Article a JOIN a.game g ";
+
+        $bindParameters = [];
+        if (!empty($filters)) {
+            [$whereClause, $bindParameters] = $this->getWhereClauseForSearch($filters, false);
+            $query .= "WHERE {$whereClause}";
+        }
+
+        return (int) $this->getEntityManager()
+            ->createQuery($query)
+            ->setParameters($bindParameters)
+            ->getSingleScalarResult();
+    }
+
+    public function getRelatedArticles(string $articleSlug, ?string $gameSlug = null)
     {
         $queryBuilder = $this->createQueryBuilder('a');
+        $queryBuilder->where('a.children = 1');
+        return $queryBuilder->getQuery()->getResult();
     }
 }
