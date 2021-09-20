@@ -34,7 +34,7 @@ class CreateMediaObjectAction extends AbstractController
         }
 
         if (!$uploadedFile->isValid()) {
-            throw new UploadException("Error while uploading file to blog service.");
+            throw new UploadException($uploadedFile->getErrorMessage());
         }
 
         if (($mimeType = $uploadedFile->getMimeType()) === null) {
