@@ -69,7 +69,7 @@ class ArticleItemOutput
     /**
      * @Groups({"articleItem:read", "article:write"})
      */
-    public ?MetaInformation $meta = null;
+    public ?MetaInformation $seo = null;
 
     /**
      * @Groups({"articleItem:read", "article:write"})

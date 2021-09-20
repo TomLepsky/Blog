@@ -36,5 +36,5 @@ class TagOutput
     /**
      * @Groups({"tagItem:read"})
      */
-    public ?MetaInformation $meta = null;
+    public ?MetaInformation $seo = null;
 }

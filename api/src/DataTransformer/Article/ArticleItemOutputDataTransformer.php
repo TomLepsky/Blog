@@ -38,7 +38,7 @@ class ArticleItemOutputDataTransformer implements DataTransformerInterface
             $object->getOgTitle() !== null ||
             $object->getOgDescription() !== null) {
 
-            $articleOutput->meta = MetaInformationMapper::setMetaInformationFromEntity($object);
+            $articleOutput->seo = MetaInformationMapper::setMetaInformationFromEntity($object);
         }
 
         $articleOutput->createdAt = $object->getCreatedAt();

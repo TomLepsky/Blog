@@ -32,7 +32,7 @@ class GameOutputDataTransformer implements DataTransformerInterface
             $object->getOgTitle() !== null ||
             $object->getOgDescription() !== null) {
 
-            $gameOutput->meta = MetaInformationMapper::setMetaInformationFromEntity($object);
+            $gameOutput->seo = MetaInformationMapper::setMetaInformationFromEntity($object);
         }
 
         return $gameOutput;

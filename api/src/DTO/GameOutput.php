@@ -36,5 +36,5 @@ class GameOutput
     /**
      * @Groups({"gameItem:read"})
      */
-    public ?MetaInformation $meta = null;
+    public ?MetaInformation $seo = null;
 }

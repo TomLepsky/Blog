@@ -29,7 +29,7 @@ class TagOutputDataTransformer implements DataTransformerInterface
             $object->getOgTitle() !== null ||
             $object->getOgDescription() !== null) {
 
-            $tagOutput->meta = MetaInformationMapper::setMetaInformationFromEntity($object);
+            $tagOutput->seo = MetaInformationMapper::setMetaInformationFromEntity($object);
         }
 
         return $tagOutput;
