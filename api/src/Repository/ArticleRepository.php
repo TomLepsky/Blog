@@ -25,8 +25,6 @@ class ArticleRepository extends ServiceEntityRepository
     public const GAME_SLUG = 'game_slug';
     public const HEADER = 'header';
 
-    public const MAX_RELATED = 7;
-
     public const VALID_QUERY_PARAMETERS = [
         self::TAGS_SLUG,
         self::GAME_SLUG,
@@ -50,9 +48,39 @@ class ArticleRepository extends ServiceEntityRepository
 
     /**
      * @param string|null $game
+     * @param int $page
+     * @param int $pageSize
+     * @return Paginator
+     */
+    public function getPopularArticles(?string $game = null, int $page = 1, int $pageSize = 10) : Paginator
+    {
+        $queryBuilder = $this->createQueryBuilder('a');
+        if ($game !== null) {
+            $queryBuilder
+                ->innerJoin(Game::class, 'g', 'WITH', 'a.game = g.id')
+                ->andWhere('g.slug = :slug')
+                ->setParameter('slug', $game);
+        }
+        $queryBuilder
+            ->andWhere('a.popular IS NOT NULL')
+            ->orderBy('a.createdAt', 'DESC');
+
+        $firstResult = ($page - 1) * $pageSize;
+        return new Paginator(
+            new DoctrinePaginator(
+                $queryBuilder
+                    ->getQuery()
+                    ->setFirstResult($firstResult)
+                    ->setMaxResults($pageSize)
+            )
+        );
+    }
+
+    /**
+     * @param string|null $game
      * @return Article[]
      */
-    public function getPopularArticles(?string $game = null) : array
+    public function getMainPageArticles(?string $game = null) : array
     {
         $queryBuilder = $this->createQueryBuilder('a');
         if ($game !== null) {
@@ -98,7 +126,7 @@ class ArticleRepository extends ServiceEntityRepository
      * @param int $pageSize
      * @return Paginator
      */
-    public function search(array $parameters = [], int $page = 1, int $pageSize = 15) : Paginator
+    public function search(array $parameters = [], int $page = 1, int $pageSize = 10) : Paginator
     {
         $query = "
             SELECT a FROM App\Entity\Article a
@@ -181,5 +209,10 @@ class ArticleRepository extends ServiceEntityRepository
             ->setParameter('articleSlug', $articleSlug);
 
         return $queryBuilder->getQuery()->getOneOrNullResult();
+    }
+
+    public function getRelatedArticles(string $articleSlug, ?string $gameSlug = null) : Paginator
+    {
+        $queryBuilder = $this->createQueryBuilder('a');
     }
 }

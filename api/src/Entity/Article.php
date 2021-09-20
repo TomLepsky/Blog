@@ -8,6 +8,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Config;
 use App\Controller\ArticleController\GetArticleItem;
+use App\Controller\ArticleController\GetMainPageArticles;
 use App\Controller\ArticleController\GetPopularArticles;
 use App\Controller\ArticleController\GetRelatedArticles;
 use App\Controller\ArticleController\SearchArticlesAction;
@@ -53,6 +54,16 @@ use Symfony\Component\Validator\Constraints as Assert;
             'order' => ['createdAt' => 'DESC'],
             'output' => ArticleCollectionOutput::class,
         ],
+        Config::API_BLOG_NAMESPACE . '_articles_main' => [
+            'method' => 'get',
+            'path' => '/' . Config::API_BLOG_NAMESPACE . '/articles/main',
+            'controller' => GetMainPageArticles::class,
+            'normalization_context' => [
+                'groups' => ['articleCollection:read'],
+                'skip_null_values' => true
+            ],
+            'output' => ArticleCollectionOutput::class,
+        ],
         Config::API_BLOG_NAMESPACE . '_articles_popular' => [
             'method' => 'get',
             'path' => '/' . Config::API_BLOG_NAMESPACE . '/articles/popular',
@@ -76,7 +87,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ],
         Config::API_BLOG_NAMESPACE . '_articles_related' => [
             'method' => 'get',
-            'path' => '/' . Config::API_BLOG_NAMESPACE . '/articles/related/{slug}',
+            'path' => '/' . Config::API_BLOG_NAMESPACE . '/articles/related',
             'controller' => GetRelatedArticles::class,
             'normalization_context' => [
                 'groups' => ['articleCollection:read'],
