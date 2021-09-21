@@ -108,6 +108,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'path' => '/articles/{slug}',
             'normalization_context' => [
                 'groups' => ['articleItem:read'],
+                'enable_max_depth' => true
             ],
         ],
         Config::API_BLOG_NAMESPACE . '_article_get' => [
@@ -139,6 +140,9 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     denormalizationContext: [
         'groups' => ['article:write']
+    ],
+    normalizationContext: [
+        'enable_max_depth' => true
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['game.slug' => 'exact', 'tags.slug' => 'exact', 'header' => 'partial'])]
