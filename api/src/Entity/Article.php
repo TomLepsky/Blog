@@ -89,7 +89,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ],
         Config::API_BLOG_NAMESPACE . '_articles_related' => [
             'method' => 'get',
-            'path' => '/' . Config::API_BLOG_NAMESPACE . '/articles/related',
+            'path' => '/' . Config::API_BLOG_NAMESPACE . '/articles/{gameSlug}/{articleSlug}/related',
             'controller' => GetRelatedArticles::class,
             'normalization_context' => [
                 'groups' => ['articleCollection:read'],

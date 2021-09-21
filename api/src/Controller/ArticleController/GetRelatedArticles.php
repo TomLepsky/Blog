@@ -17,14 +17,8 @@ class GetRelatedArticles extends AbstractController
 {
     use PaginatorTrait;
 
-    public function __invoke(Request $request) : Paginator
+    public function __invoke(string $gameSlug, string $articleSlug, Request $request) : Paginator
     {
-        $articleSlug = $request->query->get('article_slug');
-        $gameSlug = $request->query->get('game_slug');
-        if ($articleSlug === null) {
-            throw new BadRequestException("Please, provide article slug.");
-        }
-
         /** @var ArticleRepository $repository */
         $repository = $this->getDoctrine()->getRepository(Article::class);
         $article = $repository->getArticleItem($articleSlug, $gameSlug);
