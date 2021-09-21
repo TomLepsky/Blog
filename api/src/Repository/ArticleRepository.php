@@ -242,10 +242,18 @@ class ArticleRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    public function getRelatedArticles(string $articleSlug, ?string $gameSlug = null)
+    public function getChildrenOf(Article $article, int $page = 1, int $pageSize = 10) : Paginator
     {
-        $queryBuilder = $this->createQueryBuilder('a');
-        $queryBuilder->where('a.children = 1');
-        return $queryBuilder->getQuery()->getResult();
+        $firstResult = ($page - 1) * $pageSize;
+        return new Paginator(
+            new DoctrinePaginator(
+                $this->createQueryBuilder('a')
+                    ->andWhere(':article MEMBER OF a.parents')
+                    ->setParameter('article', $article)
+                    ->setFirstResult($firstResult)
+                    ->setMaxResults($pageSize)
+                    ->getQuery()
+            )
+        );
     }
 }
