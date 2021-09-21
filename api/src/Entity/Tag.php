@@ -66,6 +66,9 @@ use App\Security\Voter\VoterAttribute;
             "security" => "is_granted('" . VoterAttribute::DELETE . "', object)"
         ]
     ],
+    attributes: [
+        'pagination_client_items_per_page' => true,
+    ],
     denormalizationContext: [
         'groups' => ['tag:write']
     ]
